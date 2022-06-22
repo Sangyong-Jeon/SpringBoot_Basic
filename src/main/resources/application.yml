@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/springboot_basic
+    username: basic
+    password: 1234
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+#        dialect: org.hibernate.dialect.Oracle10gDialect
+logging:
+  level:
+    org:
+      hibernate.SQL: debug
+      apache.coyote.http11: debug
+file.dir: ???? ?? ?? ??
+
