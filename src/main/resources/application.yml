@@ -10,11 +10,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-#        dialect: org.hibernate.dialect.Oracle10gDialect
+        dialect: org.hibernate.dialect.Oracle10gDialect
 logging:
   level:
     org:
-      hibernate.SQL: debug
+#      hibernate.SQL: debug
       apache.coyote.http11: debug
 file.dir: ???? ?? ?? ??
-
+server:
+  port: 8081
