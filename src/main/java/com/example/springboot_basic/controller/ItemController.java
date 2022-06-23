@@ -68,14 +68,6 @@ public class ItemController {
         return "item-view";
     }
 
-    // <img> 태그로 이미지를 조회할 때 사용한다.
-    // UrlResource로 이미지 파일을 읽어서 @ResponseBody로 이미지 바이너리를 반환한다.
-    @ResponseBody
-    @GetMapping("/images/{filename}")
-    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
-        return new UrlResource("file:" + fileStore.getFullPath(filename));
-    }
-
     // 파일을 다운로드 할 때 실행된다.
     // 예제를 더 단순화 할 수 있지만, 파일 다운로드 시 권한 체크같은 복잡한 상황까지 가정한다 생각하고 이미지 id를 요청하도록 했다.
     // 파일 다운로드시에는 고객이 업로드한 파일 이름으로 다운로드 하는게 좋다.

@@ -5,16 +5,14 @@ import com.example.springboot_basic.dto.member.MemberInfoResponse;
 import com.example.springboot_basic.dto.post.PostForm;
 import com.example.springboot_basic.dto.post.PostInfoResponse;
 import com.example.springboot_basic.dto.post.PostsResponse;
+import com.example.springboot_basic.file.FileStore;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -25,6 +23,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+
 
     @GetMapping("/posts/new")
     public String createPost(Model model) {
@@ -61,6 +60,4 @@ public class PostController {
         model.addAttribute("form", postInfo);
         return "post/updatePostForm";
     }
-
-
 }

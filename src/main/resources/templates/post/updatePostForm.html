@@ -41,8 +41,8 @@
 
     function deleteClick(clickId) {
         $.ajax({
-            type: "GET",
-            url: "/images/" + clickId + "/remove",
+            type: "DELETE",
+            url: "/images/" + clickId,
             success: function (res) {
                 console.log('삭제 성공')
                 window.location.reload(true);

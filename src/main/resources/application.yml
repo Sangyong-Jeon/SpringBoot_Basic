@@ -16,6 +16,10 @@ spring:
         dialect: org.hibernate.dialect.Oracle10gDialect
   thymeleaf:
     cache: false
+  servlet:
+    multipart:
+      max-file-size: 5MB # 파일 하나의 최대 사이즈, 기본값은 1MB
+      max-request-size: 100MB  # 멀티파트 요청 하나의 전체 용량 제한
 logging:
   level:
     org:
