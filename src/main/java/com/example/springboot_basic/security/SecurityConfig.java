@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,9 +19,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
                 .mvcMatchers("/", "/members/new").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
                 .mvcMatchers(HttpMethod.GET, "/posts").permitAll()
-                .mvcMatchers("/member/info").hasAnyRole("ADMIN", "USER")
+                .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
+//                .mvcMatchers("/members").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated() // 위 요청 외에는 모두 로그인 해야함
                 .and()
                 .formLogin()
@@ -37,7 +36,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .mvcMatchers("/**", "/css/**", "/js/**", "/image/**")
+                .mvcMatchers( "/css/**", "/js/**", "/image/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+
+    <div class="py-5 text-center">
+        <h2>게시글 등록</h2>
+    </div>
+    <form th:action method="post" enctype="multipart/form-data" th:object="${form}">
+        <div class="form-group">
+            <label th:for="title">제목</label>
+            <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="content">내용</label>
+            <input type="text" th:field="*{content}" class="form-control" placeholder="내용을 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="category">카테고리</label>
+            <input type="text" th:field="*{category}" class="form-control" placeholder="카테고리를 입력하세요">
+        </div>
+        <div class="form-group">
+            <label th:for="imageFiles">이미지 파일</label>
+            <input type="file" th:field="*{imageFiles}" multiple="multiple">
+        </div>
+        <input type="submit">
+    </form>
+</div>
+</body>
+</html>

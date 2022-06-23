@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<!--<head th:replace="fragments/header::header"/>-->
-<head>
-    <script src="./jquery-3.6.0.min.js"></script>
-</head>
+<head th:replace="fragments/header::header"/>
 <body>
 
 
@@ -15,7 +12,7 @@
         <p>
             <a class="btn btn-lg btn-secondary" href="/login">로그인</a>
             <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>
-            <a class="btn btn-lg btn-secondary" href="/members/info">회원 정보</a>
+            <a class="btn btn-lg btn-secondary" href="/members">회원 정보</a>
         </p>
         <p class="lead">게시판 기능</p>
         <p>
@@ -32,7 +29,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var message = [[${message}]];
-    alert(message);
+    console.log(message);
     /*]]>*/
 
 

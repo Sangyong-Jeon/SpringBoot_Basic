@@ -1,8 +1,12 @@
 package com.example.springboot_basic.controller;
 
+import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.dto.member.MemberForm;
+import com.example.springboot_basic.dto.member.MemberInfoResponse;
+import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,8 +40,12 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/members/info")
-    public String info() {
+    @GetMapping("/members")
+    public String info(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                       Model model) {
+        Member member = principalDetails.getMember();
+        MemberInfoResponse memberInfoResponse = new MemberInfoResponse(member);
+        model.addAttribute("member", memberInfoResponse);
         return "member/memberInfo";
     }
 

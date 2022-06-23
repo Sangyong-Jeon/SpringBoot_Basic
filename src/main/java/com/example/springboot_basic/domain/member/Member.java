@@ -1,15 +1,13 @@
 package com.example.springboot_basic.domain.member;
 
 import com.example.springboot_basic.domain.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@ToString
 @Table(name = "MEMBER") // 테이블명 변경
 @SequenceGenerator( // 시퀀스 생성
         name = "MEM_SEQ_GENERATOR",

@@ -3,6 +3,7 @@ package com.example.springboot_basic.domain.post;
 import com.example.springboot_basic.domain.BaseEntity;
 import com.example.springboot_basic.domain.member.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,4 +38,13 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEM_ID")
     private Member member;
+
+    @Builder
+    public Post(String title, String content, int viewCount, PostCategory category, Member member) {
+        this.title = title;
+        this.content = content;
+        this.viewCount = viewCount;
+        this.category = category;
+        this.member = member;
+    }
 }
