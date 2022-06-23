@@ -74,4 +74,14 @@ public class PostService {
                 .storeImageName(storeImageName)
                 .build();
     }
+
+    public Long updatePost(PostInfoResponse form) throws IOException {
+        Optional<Post> findPost = postRepository.findById(form.getId());
+        Post post = findPost.orElse(null);
+        if (post == null) return null;
+        post.updateForm(form);
+        List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
+        storeImageFiles.forEach(f -> fileRepository.save(new File(f, post)));
+        return post.getId();
+    }
 }

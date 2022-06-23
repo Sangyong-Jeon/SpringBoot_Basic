@@ -46,18 +46,25 @@ public class PostController {
     }
 
     // 게시글 목록
-    @GetMapping("posts")
+    @GetMapping("/posts")
     public String listPost(Model model) {
         List<PostsResponse> posts = postService.findPosts();
-        model.addAttribute("posts",posts);
+        model.addAttribute("posts", posts);
         return "post/postList";
     }
 
     // 게시글 수정
-    @GetMapping("posts/{postId}/edit")
+    @GetMapping("/posts/{postId}/edit")
     public String updatePostForm(@PathVariable("postId") Long postId, Model model) {
         PostInfoResponse postInfo = postService.findPost(postId);
         model.addAttribute("form", postInfo);
         return "post/updatePostForm";
+    }
+
+    @PostMapping("/posts/{postId}/edit")
+    public String updatePost(@ModelAttribute("form") PostInfoResponse form, RedirectAttributes redirectAttributes) throws IOException {
+        Long postId = postService.updatePost(form);
+        redirectAttributes.addAttribute("postId", postId);
+        return "redirect:/posts/{postId}";
     }
 }

@@ -2,6 +2,7 @@ package com.example.springboot_basic.domain.post;
 
 import com.example.springboot_basic.domain.BaseEntity;
 import com.example.springboot_basic.domain.member.Member;
+import com.example.springboot_basic.dto.post.PostInfoResponse;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,5 +47,10 @@ public class Post extends BaseEntity {
         this.viewCount = viewCount;
         this.category = category;
         this.member = member;
+    }
+
+    public void updateForm(PostInfoResponse form) {
+        this.title = form.getTitle();
+        this.content = form.getContent();
     }
 }

@@ -6,7 +6,7 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
-    <form th:object="${form}" method="post">
+    <form th:object="${form}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
 
         <div class="form-group">
@@ -26,9 +26,11 @@
                 <img class="image" th:id="${storeImage.getId()}" th:src="|/images/${storeImage.getStoreFileName()}|"
                      width="200" height="200"/>
                 <p th:text="${storeImage.getUploadFileName()}"></p>
-                <input type="button" th:id="${storeImage.getId()}" class="deleteBtn" value="삭제" onclick="deleteClick(this.id)" />
+                <input type="button" th:id="${storeImage.getId()}" class="deleteBtn" value="삭제"
+                       onclick="deleteClick(this.id)"/>
             </div>
         </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <div th:replace="fragments/footer :: footer"/>
 </div>
