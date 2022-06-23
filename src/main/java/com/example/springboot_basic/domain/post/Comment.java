@@ -1,5 +1,7 @@
-package com.example.springboot_basic.domain;
+package com.example.springboot_basic.domain.post;
 
+import com.example.springboot_basic.domain.BaseEntity;
+import com.example.springboot_basic.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

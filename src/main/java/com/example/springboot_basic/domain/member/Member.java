@@ -1,6 +1,8 @@
-package com.example.springboot_basic.domain;
+package com.example.springboot_basic.domain.member;
 
+import com.example.springboot_basic.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +35,12 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", length = 20, nullable = false)
     private MemberRole role;
+
+    @Builder
+    public Member(String loginId, String password, String name, MemberRole role) {
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.role = role;
+    }
 }

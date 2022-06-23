@@ -1,0 +1,42 @@
+package com.example.springboot_basic.service;
+
+import com.example.springboot_basic.domain.member.Member;
+import com.example.springboot_basic.domain.member.MemberRole;
+import com.example.springboot_basic.dto.member.MemberForm;
+import com.example.springboot_basic.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class MemberService {
+
+    private final MemberRepository memberRepository;
+
+    // 회원가입
+    public Long join(MemberForm memberForm) {
+
+        validateDuplicateMember(memberForm);
+
+        Member member = Member.builder()
+                .loginId(memberForm.getLoginId())
+                .password(memberForm.getPassword()) // 나중에 암호화
+                .name(memberForm.getName())
+                .role(MemberRole.ROLE_MEMBER) // 일반회원 유형
+                .build();
+        memberRepository.save(member);
+        return member.getId();
+    }
+
+    private void validateDuplicateMember(MemberForm memberForm) {
+        Optional<Member> findMember = memberRepository.findByLoginId(memberForm.getLoginId());
+        if (findMember.isPresent()) {
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
+    }
+
+}

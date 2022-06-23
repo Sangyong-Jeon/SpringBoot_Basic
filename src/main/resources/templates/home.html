@@ -1,18 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header::header">
     <title>Hello</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader::bodyHeader" />
+    <div th:replace="fragments/bodyHeader::bodyHeader"/>
     <div class="jumbotron">
-        <h1>HI POST</h1>
+        <h1>Hello Home</h1>
+        <p class="lead">회원 기능</p>
+        <p>
+            <a class="btn btn-lg btn-secondary" href="/login">로그인</a>
+            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>
+            <a class="btn btn-lg btn-secondary" href="/members/info">회원 정보</a>
+        </p>
+        <p class="lead">게시판 기능</p>
+        <p>
+            <a class="btn btn-lg btn-dark" href="/posts">게시글 목록</a>
+            <a class="btn btn-lg btn-dark" href="/posts/new">게시글 등록</a>
+        </p>
 
     </div>
-    <div th:replace="fragments/footer :: footer" />
+    <div th:replace="fragments/footer :: footer"/>
 </div>
 
 

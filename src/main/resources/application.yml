@@ -1,4 +1,7 @@
 spring:
+  output:
+    ansi:
+      enabled: always
   datasource:
     url: jdbc:h2:tcp://localhost/~/springboot_basic
     username: basic
