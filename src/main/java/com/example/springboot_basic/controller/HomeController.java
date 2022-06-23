@@ -12,6 +12,6 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("message", "데이터 자바스크립트에 넣어짐");
-        return "home"; // resources:templates/home.html 반환
+        return "home2"; // resources:templates/home.html 반환
     }
 }

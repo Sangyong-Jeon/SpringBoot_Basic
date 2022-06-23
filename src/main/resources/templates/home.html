@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header::header"/>
-
+<!--<head th:replace="fragments/header::header"/>-->
+<head>
+    <script src="./jquery-3.6.0.min.js"></script>
+</head>
 <body>
-<script src="../static/jquery-3.6.0.min.js"></script>
-<div id="test">jQuery 테스트입니다.</div>
+
+
 <div class="container">
     <div th:replace="fragments/bodyHeader::bodyHeader"/>
     <div class="jumbotron">
@@ -22,7 +24,7 @@
         </p>
 
     </div>
-
+    <div class="test2">jQuery 테스트입니다.</div>
     <div th:replace="fragments/footer :: footer"/>
 </div>
 
@@ -33,7 +35,10 @@
     alert(message);
     /*]]>*/
 
-    $('#test').css("color", "green")
+
+    $('.test2').click(function () {
+        $('.test2').css({"color": "green", "font-size": "20px"});
+    });
 
 
 </script>
