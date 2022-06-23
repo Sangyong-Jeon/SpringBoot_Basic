@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+    <form th:object="${form}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="form-group">
+            <label th:for="title">제목</label>
+            <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요"/>
+        </div>
+        <div class="form-group">
+            <label th:for="content">내용</label>
+            <input type="text" th:field="*{content}" class="form-control" placeholder="내용을 입력하세요"/>
+        </div>
+        <div class="form-group">
+            <label th:for="imageFiles">이미지 파일</label>
+            <input type="file" th:field="*{imageFiles}" multiple="multiple">
+        </div>
+        <div>
+            <div th:each="storeImage : *{storeImageName}">
+                <img class="image" th:id="${storeImage.getId()}" th:src="|/images/${storeImage.getStoreFileName()}|"
+                     width="200" height="200"/>
+                <p th:text="${storeImage.getUploadFileName()}"></p>
+                <input type="button" th:id="${storeImage.getId()}" class="deleteBtn" value="삭제" onclick="deleteClick(this.id)" />
+            </div>
+        </div>
+    </form>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+    //<button id='ap' onclick="test(this)">ab</button>
+    // function test(e){ alert($(e).attr('id')); }
+
+    function deleteClick(clickId) {
+        $.ajax({
+            type: "GET",
+            url: "/images/" + clickId + "/remove",
+            success: function (res) {
+                console.log('삭제 성공')
+                window.location.reload(true);
+                // window.location.replace('http://localhost:8080')
+                // location.href = "http://localhost:8086"
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log('삭제 실패')
+            }
+        });
+    };
+
+    // $('.deleteBtn').click(() => {
+    // });
+
+</script>
+</html>
