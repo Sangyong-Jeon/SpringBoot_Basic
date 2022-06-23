@@ -14,6 +14,8 @@ import com.example.springboot_basic.repository.FileRepository;
 import com.example.springboot_basic.repository.MemberRepository;
 import com.example.springboot_basic.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,5 +85,23 @@ public class PostService {
         List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
         storeImageFiles.forEach(f -> fileRepository.save(new File(f, post)));
         return post.getId();
+    }
+
+    public ResponseEntity deletePost(Long postId) {
+        Optional<Post> findPost = postRepository.findById(postId);
+        Post post = findPost.orElse(null);
+        if (post == null) return null;
+
+        List<File> files = fileRepository.findByPost(post);
+        if (files.size() > 0) {
+            files.forEach(file -> {
+                String fullPath = fileStore.getFullPath(file.getStoreFileName());
+                java.io.File imageFile = new java.io.File(fullPath);
+                if (imageFile.exists()) imageFile.delete();
+                fileRepository.delete(file);
+            });
+        }
+        postRepository.delete(post);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

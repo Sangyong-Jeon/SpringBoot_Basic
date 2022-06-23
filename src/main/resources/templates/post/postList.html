@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
+<head th:replace="fragments/header :: header"/>
 <body>
 
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
     <div>
         <table class="table table-striped">
@@ -27,17 +27,36 @@
                 <td th:text="${post.createdName}"></td>
                 <td th:text="${post.createdDate}"></td>
                 <td>
-                    <a href="#" th:href="@{/posts/{postId}/edit (postId=${post.id})}" class="btn btn-primary" role="button">수정</a>
+                    <a href="#" th:href="@{/posts/{postId}/edit (postId=${post.id})}" class="btn btn-primary"
+                       role="button">수정</a>
                 </td>
                 <td>
-                    <a href="#" th:href="@{/posts/{postId}/remove (postId=${post.id})}" class="btn btn-primary" role="button">삭제</a>
+                    <button th:id="${post.id}" class="btn btn-primary" onclick="deletePost(this.id)">삭제</button>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div th:replace="fragments/footer::footer" />
+    <div th:replace="fragments/footer::footer"/>
 </div>
 
 </body>
+
+<script th:inline="javascript">
+    const deletePost = (clickId) => {
+        $.ajax({
+            type: "DELETE",
+            url: "/posts/" + clickId,
+            success: (res) => {
+                console.log('게시글 삭제 완료');
+                window.location.reload(true);
+            },
+            error: (XMLHttpRequest, textStatus, errorThrown) => {
+                console.log(XMLHttpRequest);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        })
+    }
+</script>
 </html>
