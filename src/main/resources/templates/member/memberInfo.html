@@ -24,11 +24,18 @@
             </tr>
             </tbody>
         </table>
+        <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
     </div>
+    <div th:replace="fragments/footer :: footer"/>
 </div>
-<div th:replace="fragments/footer :: footer" />
 
 
 </body>
+
+<script th:inline="javascript">
+    const backPage = () => {
+        location.href = "http://localhost:8081/"
+    }
+</script>
 
 </html>

@@ -30,10 +30,16 @@
                    th:class="${#fields.hasErrors('name')}? 'form-control fieldError' : 'form-control'">
             <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect date</p>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">가입</button>
+        <button type="button" class="btn btn-secondary" onclick="backPage()">취소</button>
     </form>
     <br/>
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
+<script th:inline="javascript">
+    const backPage = () => {
+        location.href = "http://localhost:8081/"
+    }
+</script>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/header::header"/>
 <body>
 
@@ -10,14 +10,20 @@
         <h1>Hello Home</h1>
         <p class="lead">회원 기능</p>
         <p>
-            <a class="btn btn-lg btn-secondary" href="/login">로그인</a>
-            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>
+            <a class="btn btn-lg btn-secondary" href="/login" sec:authorize="isAnonymous()">로그인</a>
+            <a class="btn btn-lg btn-secondary" href="/members/new" sec:authorize="isAnonymous()">회원 가입</a>
+            <a class="btn btn-lg btn-secondary" href="/logout" sec:authorize="isAuthenticated()">로그아웃</a>
             <a class="btn btn-lg btn-secondary" href="/members">회원 정보</a>
         </p>
         <p class="lead">게시판 기능</p>
         <p>
             <a class="btn btn-lg btn-dark" href="/posts">게시글 목록</a>
             <a class="btn btn-lg btn-dark" href="/posts/new">게시글 등록</a>
+        </p>
+        <p class="lead">색깔 만들기</p>
+        <p>
+            <a class="btn btn-lg btn-info" href="#">하이</a>
+            <a class="btn btn-lg btn-info" href="#" >하이22</a>
         </p>
 
     </div>
