@@ -19,6 +19,6 @@ logging:
     org:
 #      hibernate.SQL: debug
       apache.coyote.http11: debug
-file.dir: ???? ?? ?? ??
+file.dir: C:\Users\bon300-27\Desktop\github\SpringBoot_Basic\src\main\resources\static\image
 server:
   port: 8081
