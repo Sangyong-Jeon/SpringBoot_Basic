@@ -5,6 +5,7 @@ import com.example.springboot_basic.domain.member.MemberRole;
 import com.example.springboot_basic.dto.member.MemberForm;
 import com.example.springboot_basic.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 회원가입
     public Long join(MemberForm memberForm) {
@@ -24,9 +26,9 @@ public class MemberService {
 
         Member member = Member.builder()
                 .loginId(memberForm.getLoginId())
-                .password(memberForm.getPassword()) // 나중에 암호화
+                .password(bCryptPasswordEncoder.encode(memberForm.getPassword())) // 나중에 암호화
                 .name(memberForm.getName())
-                .role(MemberRole.ROLE_MEMBER) // 일반회원 유형
+                .role(MemberRole.ROLE_USER) // 일반회원 유형
                 .build();
         memberRepository.save(member);
         return member.getId();

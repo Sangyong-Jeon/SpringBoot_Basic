@@ -6,6 +6,7 @@
 </head>
 
 <body>
+<div id="test">jQuery 테스트입니다.</div>
 <div class="container">
     <div th:replace="fragments/bodyHeader::bodyHeader"/>
     <div class="jumbotron">
@@ -23,9 +24,19 @@
         </p>
 
     </div>
+
     <div th:replace="fragments/footer :: footer"/>
 </div>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = [[${message}]];
+    alert(message);
+    /*]]>*/
+
+    $('#test').css("color", "green")
+
+</script>
 
 </body>
 </html>

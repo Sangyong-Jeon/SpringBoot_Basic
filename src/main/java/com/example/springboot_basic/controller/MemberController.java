@@ -31,4 +31,9 @@ public class MemberController {
         memberService.join(form);
         return "redirect:/";
     }
+
+    @GetMapping("/members/info")
+    public String info() {
+        return "member/memberInfo";
+    }
 }
