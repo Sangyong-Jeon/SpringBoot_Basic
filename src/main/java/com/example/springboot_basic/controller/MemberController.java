@@ -8,8 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,4 +40,19 @@ public class MemberController {
     public String info() {
         return "member/memberInfo";
     }
+
+    @PostMapping("/test")
+    public String addFile(@RequestParam String username,
+                          @RequestParam MultipartFile file) throws IOException {
+        System.out.println("username = " + username);
+
+        if (!file.isEmpty()) {
+            String fullPath = "/Users/yong/Documents/GitHub/personal/file/" + file.getOriginalFilename();
+            System.out.println("파일 저장 fullPath = " + fullPath);
+            file.transferTo(new File(fullPath));
+        }
+        return "test-form";
+    }
+
+
 }

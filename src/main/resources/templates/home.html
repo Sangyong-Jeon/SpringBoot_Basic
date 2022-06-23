@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header::header">
-    <title>Hello</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
+<head th:replace="fragments/header::header"/>
 
 <body>
+<script src="../static/jquery-3.6.0.min.js"></script>
 <div id="test">jQuery 테스트입니다.</div>
 <div class="container">
     <div th:replace="fragments/bodyHeader::bodyHeader"/>
@@ -28,6 +26,7 @@
     <div th:replace="fragments/footer :: footer"/>
 </div>
 
+</body>
 <script th:inline="javascript">
     /*<![CDATA[*/
     var message = [[${message}]];
@@ -36,7 +35,6 @@
 
     $('#test').css("color", "green")
 
-</script>
 
-</body>
+</script>
 </html>

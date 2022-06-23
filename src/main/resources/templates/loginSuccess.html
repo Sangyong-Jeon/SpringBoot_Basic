@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 성공</title>
+</head>
+<body>
+<h1>로그인 성공!!</h1>
+<hr>
+<p>
+    <span sec:authentication="name"></span>님 환영합니다~ <!-- username 값을 가져옴 -->
+</p>
+<a th:href="@{'/'}">메인으로 이동</a>
+</body>
+</html>
