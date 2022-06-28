@@ -28,7 +28,7 @@ public class MemberService {
                 .loginId(memberForm.getLoginId())
                 .password(bCryptPasswordEncoder.encode(memberForm.getPassword())) // 나중에 암호화
                 .name(memberForm.getName())
-                .role(MemberRole.ROLE_USER) // 일반회원 유형
+                .role(memberForm.getRole())
                 .build();
         memberRepository.save(member);
         return member.getId();

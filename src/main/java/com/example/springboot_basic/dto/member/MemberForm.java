@@ -1,5 +1,6 @@
 package com.example.springboot_basic.dto.member;
 
+import com.example.springboot_basic.domain.member.MemberRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +18,6 @@ public class MemberForm {
 
     @NotEmpty(message = "회원 이름은 필수입니다.")
     private String name;
+
+    private MemberRole role;
 }

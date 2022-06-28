@@ -20,7 +20,7 @@ public class SecurityConfig {
         return http.authorizeRequests()
                 .mvcMatchers("/", "/members/new").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/posts").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
+                .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "MANAGER", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
 //                .mvcMatchers("/members").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated() // 위 요청 외에는 모두 로그인 해야함
                 .and()
@@ -36,7 +36,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .mvcMatchers( "/css/**", "/js/**", "/image/**")
+                .mvcMatchers("/css/**", "/js/**", "/image/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 

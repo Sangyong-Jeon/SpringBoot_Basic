@@ -32,7 +32,7 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", length = 20, nullable = false)
-    private MemberRole role;
+    private MemberRole role; // ADMIN, MANAGER, USER
 
     @Builder
     public Member(String loginId, String password, String name, MemberRole role) {

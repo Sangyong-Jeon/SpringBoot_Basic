@@ -61,6 +61,4 @@ public class MemberController {
         }
         return "test-form";
     }
-
-
 }
