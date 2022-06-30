@@ -28,7 +28,7 @@ public class MemberController {
     @GetMapping("/members/new")
     public String createForm(Model model) {
         model.addAttribute("memberForm", new MemberForm());
-        return "member/createMemberForm";
+        return "member/member-form";
     }
 
     @PostMapping(value = "members/new")
@@ -46,7 +46,7 @@ public class MemberController {
         Member member = principalDetails.getMember();
         MemberInfoResponse memberInfoResponse = new MemberInfoResponse(member);
         model.addAttribute("member", memberInfoResponse);
-        return "member/memberInfo";
+        return "member/member-info";
     }
 
     @PostMapping("/test")

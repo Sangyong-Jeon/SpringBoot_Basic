@@ -54,7 +54,7 @@ public class PostController {
         // 화면을 조회하기 위한 기능이고, 코드가 적다면 repository를 여기서 호출해도 괜찮으나 지금은 Service에 위임함.
         List<PostsResponse> posts = postService.findPosts(postSearch);
         model.addAttribute("posts", posts);
-        return "post/postList";
+        return "post/post-list";
     }
 
     // 게시글 수정 페이지
@@ -62,7 +62,7 @@ public class PostController {
     public String updatePostForm(@PathVariable("postId") Long postId, Model model) {
         PostInfoResponse postInfo = postService.findPost(postId);
         model.addAttribute("form", postInfo);
-        return "post/updatePostForm";
+        return "post/post-form-update";
     }
 
     // 게시글 수정
