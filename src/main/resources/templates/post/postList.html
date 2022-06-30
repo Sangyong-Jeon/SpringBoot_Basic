@@ -5,7 +5,22 @@
 
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
+    <div>
+        <form th:object="${postSearch}" class="form-inline">
+            <div class="form-group mb-2">
+                <input type="text" th:field="*{postTitle}" class="form-control" placeholder="게시글제목"/>
+            </div>
+            <div class="form-group mx-sm-1 mb-2">
+                <select th:field="*{postCategory}" class="form-control">
+                    <option value="">카테고리</option>
+                    <option th:each="category : ${T(com.example.springboot_basic.domain.post.PostCategory).values()}"
+                            th:value="${category}"
+                            th:text="${category}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">검색</button>
+        </form>
+    </div>
     <div>
         <table class="table table-hover">
             <thead>
@@ -27,11 +42,15 @@
                 <td th:text="${post.createdName}"></td>
                 <td th:text="${post.createdDate}"></td>
                 <td>
-                    <a href="#" th:href="@{/posts/{postId}/edit (postId=${post.id})}" class="btn btn-primary"
-                       role="button">수정</a>
+                    <a href="#" th:href="@{/posts/{postId}/edit (postId=${post.id})}"
+                       class="btn btn-primary"
+                       role="button"
+                       sec:authorize="isAuthenticated()">수정</a>
                 </td>
                 <td>
-                    <button th:id="${post.id}" class="btn btn-primary" onclick="deletePost(this.id)">삭제</button>
+                    <button th:id="${post.id}" class="btn btn-primary" onclick="deletePost(this.id)"
+                            sec:authorize="isAuthenticated()">삭제
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -40,7 +59,6 @@
     </div>
     <div th:replace="fragments/footer::footer"/>
 </div>
-
 </body>
 
 <script th:inline="javascript">

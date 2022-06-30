@@ -4,6 +4,7 @@ import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.dto.member.MemberInfoResponse;
 import com.example.springboot_basic.dto.post.PostForm;
 import com.example.springboot_basic.dto.post.PostInfoResponse;
+import com.example.springboot_basic.dto.post.PostSearch;
 import com.example.springboot_basic.dto.post.PostsResponse;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.service.PostService;
@@ -49,8 +50,9 @@ public class PostController {
 
     // 게시글 목록 페이지
     @GetMapping("/posts")
-    public String listPost(Model model) {
-        List<PostsResponse> posts = postService.findPosts();
+    public String listPost(@ModelAttribute("postSearch") PostSearch postSearch, Model model) {
+        // 화면을 조회하기 위한 기능이고, 코드가 적다면 repository를 여기서 호출해도 괜찮으나 지금은 Service에 위임함.
+        List<PostsResponse> posts = postService.findPosts(postSearch);
         model.addAttribute("posts", posts);
         return "post/postList";
     }

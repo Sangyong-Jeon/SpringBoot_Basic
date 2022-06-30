@@ -5,10 +5,7 @@ import com.example.springboot_basic.domain.post.File;
 import com.example.springboot_basic.domain.post.Post;
 import com.example.springboot_basic.dto.UploadFile;
 import com.example.springboot_basic.dto.member.MemberInfoResponse;
-import com.example.springboot_basic.dto.post.FilesResponse;
-import com.example.springboot_basic.dto.post.PostForm;
-import com.example.springboot_basic.dto.post.PostInfoResponse;
-import com.example.springboot_basic.dto.post.PostsResponse;
+import com.example.springboot_basic.dto.post.*;
 import com.example.springboot_basic.file.FileStore;
 import com.example.springboot_basic.repository.FileRepository;
 import com.example.springboot_basic.repository.MemberRepository;
@@ -52,8 +49,13 @@ public class PostService {
         return savePost.getId();
     }
 
-    public List<PostsResponse> findPosts() {
-        List<Post> posts = postRepository.findAll();
+    public List<PostsResponse> findPosts(PostSearch postSearch) {
+        // 동적으로 쿼리를 넣을수 없어서 if문과 repository 함수를 전부 만들어서 실행해야함!!!
+        List<Post> posts;
+        if (postSearch.isEmpty()) posts = postRepository.findAll();
+        else if (postSearch.getPostTitle() == null) posts = postRepository.findPostsByCategory(postSearch);
+        else if (postSearch.getPostCategory() == null) posts = postRepository.findPostsByTitle(postSearch);
+        else posts = postRepository.findPosts(postSearch);
         List<PostsResponse> postsDto = posts.stream().map(PostsResponse::new).collect(Collectors.toList());
         return postsDto;
     }
