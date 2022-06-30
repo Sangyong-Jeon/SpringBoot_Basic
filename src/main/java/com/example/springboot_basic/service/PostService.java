@@ -53,7 +53,7 @@ public class PostService {
         // 동적으로 쿼리를 넣을수 없어서 if문과 repository 함수를 전부 만들어서 실행해야함!!!
         List<Post> posts;
         if (postSearch.isEmpty()) posts = postRepository.findAll();
-        else if (postSearch.getPostTitle() == null) posts = postRepository.findPostsByCategory(postSearch);
+        else if (postSearch.getPostTitle() == null || postSearch.getPostTitle().equals("")) posts = postRepository.findPostsByCategory(postSearch);
         else if (postSearch.getPostCategory() == null) posts = postRepository.findPostsByTitle(postSearch);
         else posts = postRepository.findPosts(postSearch);
         List<PostsResponse> postsDto = posts.stream().map(PostsResponse::new).collect(Collectors.toList());

@@ -7,12 +7,13 @@ import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class PostSearch {
 
     private String postTitle; // 게시글 제목
     private PostCategory postCategory; // 게시글 카테고리[NOTICE, BOARD]
 
     public boolean isEmpty() {
-        return postTitle == null && postCategory == null;
+        return (postTitle == null || postTitle.equals("")) && postCategory == null;
     }
 }
