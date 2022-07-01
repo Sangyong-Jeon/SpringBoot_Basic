@@ -24,9 +24,9 @@
                 <option th:value="BOARD" th:text="BOARD"></option>
             </select>
         </div>
-        <div class="form-group">
-            <label th:for="imageFiles">이미지 파일</label>
-            <input type="file" th:field="*{imageFiles}" multiple="multiple">
+        <div class="custom-file">
+            <label th:for="imageFiles" class="custom-file-label">이미지 파일</label>
+            <input type="file" th:field="*{imageFiles}" multiple="multiple" class="custom-file-label">
         </div>
         <button type="submit" class="btn btn-primary">등록</button>
         <button type="button" class="btn btn-secondary" onclick="backPage()">취소</button>

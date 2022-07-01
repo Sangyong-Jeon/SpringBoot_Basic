@@ -17,24 +17,29 @@
             <label th:for="content">내용</label>
             <textarea th:field="*{content}" class="form-control" placeholder="내용을 입력하세요"></textarea>
         </div>
-        <div class="form-group">
-            <label th:for="imageFiles">이미지 파일</label>
-            <input type="file" th:field="*{imageFiles}" multiple="multiple">
+        <div class="custom-file">
+            <label th:for="imageFiles" class="custom-file-label">이미지 파일</label>
+            <input type="file" th:field="*{imageFiles}" multiple="multiple" class="custom-file-label">
         </div>
-        <div>
-            <div th:each="storeImage : *{storeImageName}">
-                <img class="image" th:id="${storeImage.getId()}" th:src="|/images/${storeImage.getStoreFileName()}|"
-                     width="200" height="200"/>
+        <br><br>
+        <div class="row justify-content-start">
+            <div class="col-3" th:each="storeImage : *{storeImageName}">
                 <div>
-                    <span th:text="${storeImage.getUploadFileName()}"></span>
-                    <input type="button" th:id="${storeImage.getId()}" class="deleteBtn btn btn-secondary" value="삭제"
-                       onclick="deleteClick(this.id)"/>
+                    <img class="image" th:id="${storeImage.getId()}" th:src="|/images/${storeImage.getStoreFileName()}|"
+                         width="200" height="200"/>
+                    <div>
+                        <span th:text="${storeImage.getUploadFileName()}"></span>
+                        <input type="button" th:id="${storeImage.getId()}" class="deleteBtn btn btn-secondary"
+                               value="삭제"
+                               onclick="deleteClick(this.id)"/>
+                    </div>
                 </div>
             </div>
         </div>
         <br>
         <button type="submit" class="btn btn-primary">수정</button>
         <button type="button" class="btn btn-secondary" onclick="backPage()">취소</button>
+        <br><br>
     </form>
     <div th:replace="fragments/footer :: footer"/>
 </div>
