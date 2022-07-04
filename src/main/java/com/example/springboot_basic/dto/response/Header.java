@@ -12,8 +12,8 @@ public class Header {
     private String code;
     private String message;
 
-    @Builder(builderMethodName = "createHeader")
-    Header(String status, String code, String message) {
+    @Builder
+    public Header(String status, String code, String message) {
         this.status = status;
         this.code = code;
         this.message = message;

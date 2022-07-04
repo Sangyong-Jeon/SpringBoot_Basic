@@ -34,7 +34,7 @@ public class FileService {
                 .body(resource);
     }
 
-    public ResponseEntity deleteImage(Long fileId) {
+    public ResponseEntity<Object> deleteImage(Long fileId) {
         Optional<File> findFile = fileRepository.findById(fileId);
         File file = findFile.orElse(null);
         if (file == null) return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -42,6 +42,6 @@ public class FileService {
         java.io.File imageFile = new java.io.File(fullPath);
         if (imageFile.exists()) imageFile.delete();
         fileRepository.delete(file);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

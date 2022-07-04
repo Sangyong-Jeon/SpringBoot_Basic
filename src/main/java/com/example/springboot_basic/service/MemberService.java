@@ -1,7 +1,6 @@
 package com.example.springboot_basic.service;
 
 import com.example.springboot_basic.domain.member.Member;
-import com.example.springboot_basic.domain.member.MemberRole;
 import com.example.springboot_basic.dto.member.MemberForm;
 import com.example.springboot_basic.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +19,8 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 회원가입
-    public Long join(MemberForm memberForm) {
-
+    public void join(MemberForm memberForm) {
         validateDuplicateMember(memberForm);
-
         Member member = Member.builder()
                 .loginId(memberForm.getLoginId())
                 .password(bCryptPasswordEncoder.encode(memberForm.getPassword())) // 나중에 암호화
@@ -31,7 +28,6 @@ public class MemberService {
                 .role(memberForm.getRole())
                 .build();
         memberRepository.save(member);
-        return member.getId();
     }
 
     private void validateDuplicateMember(MemberForm memberForm) {

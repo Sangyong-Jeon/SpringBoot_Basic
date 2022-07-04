@@ -25,6 +25,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // 회원가입
     @GetMapping("/members/new")
     public String createForm(Model model) {
         model.addAttribute("memberForm", new MemberForm());
@@ -40,6 +41,7 @@ public class MemberController {
         return "redirect:/";
     }
 
+    // 회원 상세조회
     @GetMapping("/members")
     public String info(@AuthenticationPrincipal PrincipalDetails principalDetails,
                        Model model) {
@@ -47,18 +49,5 @@ public class MemberController {
         MemberInfoResponse memberInfoResponse = new MemberInfoResponse(member);
         model.addAttribute("member", memberInfoResponse);
         return "member/member-info";
-    }
-
-    @PostMapping("/test")
-    public String addFile(@RequestParam String username,
-                          @RequestParam MultipartFile file) throws IOException {
-        System.out.println("username = " + username);
-
-        if (!file.isEmpty()) {
-            String fullPath = "/Users/yong/Documents/GitHub/personal/file/" + file.getOriginalFilename();
-            System.out.println("파일 저장 fullPath = " + fullPath);
-            file.transferTo(new File(fullPath));
-        }
-        return "test-form";
     }
 }

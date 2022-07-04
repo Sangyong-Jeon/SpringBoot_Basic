@@ -41,7 +41,7 @@ public class UtilController {
 
     // 파일 삭제
     @DeleteMapping("/images/{fileId}")
-    public ResponseEntity deleteImage(@PathVariable("fileId") Long fileId) {
+    public ResponseEntity<Object> deleteImage(@PathVariable("fileId") Long fileId) {
         return fileService.deleteImage(fileId);
     }
 }

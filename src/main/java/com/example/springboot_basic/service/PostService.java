@@ -34,7 +34,6 @@ public class PostService {
 
     public Long savePost(PostForm form, MemberInfoResponse memberInfo) throws IOException {
         Optional<Member> findMember = memberRepository.findById(memberInfo.getId());
-
         Post post = Post.builder()
                 .title(form.getTitle())
                 .content(form.getContent())
@@ -43,7 +42,6 @@ public class PostService {
                 .member(findMember.get())
                 .build();
         Post savePost = postRepository.save(post);
-
         List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
         storeImageFiles.forEach(file -> fileRepository.save(new File(file, savePost)));
         return savePost.getId();
@@ -53,7 +51,8 @@ public class PostService {
         // 동적으로 쿼리를 넣을수 없어서 if문과 repository 함수를 전부 만들어서 실행해야함!!!
         List<Post> posts;
         if (postSearch.isEmpty()) posts = postRepository.findAll();
-        else if (postSearch.getPostTitle() == null || postSearch.getPostTitle().equals("")) posts = postRepository.findPostsByCategory(postSearch);
+        else if (postSearch.getPostTitle() == null || postSearch.getPostTitle().equals(""))
+            posts = postRepository.findPostsByCategory(postSearch);
         else if (postSearch.getPostCategory() == null) posts = postRepository.findPostsByTitle(postSearch);
         else posts = postRepository.findPosts(postSearch);
         List<PostsResponse> postsDto = posts.stream().map(PostsResponse::new).collect(Collectors.toList());
@@ -66,7 +65,6 @@ public class PostService {
         if (post == null) return null;
         List<File> files = fileRepository.findByPost(post);
         List<FilesResponse> storeImageName = files.stream().map(FilesResponse::new).collect(Collectors.toList());
-
         return PostInfoResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -89,11 +87,10 @@ public class PostService {
         return post.getId();
     }
 
-    public ResponseEntity deletePost(Long postId) {
+    public ResponseEntity<Object> deletePost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
         Post post = findPost.orElse(null);
         if (post == null) return null;
-
         List<File> files = fileRepository.findByPost(post);
         if (files.size() > 0) {
             files.forEach(file -> {
@@ -104,6 +101,6 @@ public class PostService {
             });
         }
         postRepository.delete(post);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
