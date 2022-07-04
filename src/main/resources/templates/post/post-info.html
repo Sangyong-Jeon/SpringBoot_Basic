@@ -30,6 +30,11 @@
     </div>
     <div class="py-2">
         <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
+        <a class="btn btn-primary" role="button" th:href="@{/posts/{postId}/edit (postId=${post.id})}"
+           sec:authorize="isAuthenticated()">수정</a>
+        <button th:id="${post.id}" class="btn btn-primary" onclick="deletePost(this.id)"
+                sec:authorize="isAuthenticated()">삭제
+        </button>
     </div>
     <div class="py-2">
         <div>
@@ -41,6 +46,22 @@
 <script th:inline="javascript">
     const backPage = () => {
         location.href = "http://localhost:8081/posts"
+    }
+
+    const deletePost = (postId) => {
+        $.ajax({
+            type: "DELETE",
+            url: "/posts/" + postId,
+            success: (res) => {
+                console.log('게시글 삭제 완료');
+                location.href = "/posts";
+            },
+            error: (XMLHttpRequest, textStatus, errorThrown) => {
+                console.log(XMLHttpRequest);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        })
     }
 </script>
 </html>

@@ -62,22 +62,6 @@
 </body>
 
 <script th:inline="javascript">
-    const deletePost = (clickId) => {
-        $.ajax({
-            type: "DELETE",
-            url: "/posts/" + clickId,
-            success: (res) => {
-                console.log('게시글 삭제 완료');
-                window.location.reload(true);
-            },
-            error: (XMLHttpRequest, textStatus, errorThrown) => {
-                console.log(XMLHttpRequest);
-                console.log(textStatus);
-                console.log(errorThrown);
-            }
-        })
-    }
-
     const backPage = () => {
         location.href = "http://localhost:8081/"
     }
@@ -85,6 +69,5 @@
     const movePostInfoPage = (res) => {
         location.href = "http://localhost:8081/posts/" + $(res).children().eq(0).text();
     }
-
 </script>
 </html>

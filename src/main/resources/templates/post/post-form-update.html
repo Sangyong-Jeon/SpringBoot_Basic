@@ -31,14 +31,14 @@
                         <span th:text="${storeImage.getUploadFileName()}"></span>
                         <input type="button" th:id="${storeImage.getId()}" class="deleteBtn btn btn-secondary"
                                value="삭제"
-                               onclick="deleteClick(this.id)"/>
+                               onclick="deleteImage(this.id)"/>
                     </div>
                 </div>
             </div>
         </div>
         <br>
         <button type="submit" class="btn btn-primary">수정</button>
-        <button type="button" class="btn btn-secondary" onclick="backPage()">취소</button>
+        <button type="button" class="btn btn-secondary" th:id="*{id}" onclick="backPage(this.id)">취소</button>
         <br><br>
     </form>
     <div th:replace="fragments/footer :: footer"/>
@@ -47,30 +47,24 @@
 </body>
 
 <script th:inline="javascript">
-    //<button id='ap' onclick="test(this)">ab</button>
-    // function test(e){ alert($(e).attr('id')); }
-
-    function deleteClick(clickId) {
+    const deleteImage = (imageId) => {
         $.ajax({
             type: "DELETE",
-            url: "/images/" + clickId,
-            success: function (res) {
+            url: "/images/" + imageId,
+            success: (res) => {
                 console.log('삭제 성공')
                 window.location.reload(true);
                 // window.location.replace('http://localhost:8080')
                 // location.href = "http://localhost:8086"
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            error: (XMLHttpRequest, textStatus, errorThrown) => {
                 console.log('삭제 실패')
             }
         });
     };
 
-    // $('.deleteBtn').click(() => {
-    // });
-    const backPage = () => {
-        location.href = "http://localhost:8081/posts"
+    const backPage = (postId) => {
+        location.href = "http://localhost:8081/posts/" + postId;
     }
-
 </script>
 </html>
