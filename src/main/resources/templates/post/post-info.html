@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<div class="container">
+    <div th:replace="fragments/body-header :: bodyHeader"/>
+    <div class="border-bottom">
+        <h2 class="text-muted">제목</h2>
+        <h3 th:text="${post.title}"></h3>
+    </div>
+    <div class="py-2 border-bottom">
+        <h2 class="text-muted">내용</h2>
+        <p th:text="${post.content}"></p>
+        <div class="row justify-content-start py-2">
+            <div class="col-3" th:each="storeImage : ${post.storeImageName}">
+                <div class="text-center">
+                    <img class="image" th:src="|/images/${storeImage.storeFileName}|" width="200" height="200">
+                    <div>
+                        <small th:text="${storeImage.uploadFileName}"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-start text-muted py-3">
+            <span class="col col-lg-2"><small th:text="|작성자 : ${post.createdName}|"></small></span>
+            <span class="col col-lg-4"><small th:text="|조회수 : ${post.viewCount}|"></small></span>
+            <span class="col-3"><small th:text="|작성일시 : ${post.createdDate}|"></small></span>
+            <span class="col-3"><small th:text="|수정일시 : ${post.updatedDate}|"></small></span>
+        </div>
+    </div>
+    <div class="py-2">
+        <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
+    </div>
+    <div class="py-2">
+        <div>
+            댓글부분
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    const backPage = () => {
+        location.href = "http://localhost:8081/posts"
+    }
+</script>
+</html>

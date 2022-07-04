@@ -78,4 +78,12 @@ public class PostController {
     public ResponseEntity deletePost(@PathVariable("postId") Long postId) {
         return postService.deletePost(postId);
     }
+
+    // 게시글 상세조회
+    @GetMapping("/posts/{postId}")
+    public String postInfo(@PathVariable("postId") Long postId, Model model) {
+        PostInfoResponse postInfo = postService.findPost(postId);
+        model.addAttribute("post", postInfo);
+        return "post/post-info";
+    }
 }

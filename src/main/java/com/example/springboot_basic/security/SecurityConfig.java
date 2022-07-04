@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
                 .mvcMatchers("/", "/members/new").permitAll()
-                .mvcMatchers(HttpMethod.GET, "/posts").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/posts", "/posts/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "MANAGER", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
 //                .mvcMatchers("/members").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated() // 위 요청 외에는 모두 로그인 해야함
