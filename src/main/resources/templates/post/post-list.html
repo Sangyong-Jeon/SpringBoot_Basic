@@ -30,8 +30,6 @@
                 <th>조회수</th>
                 <th>작성자</th>
                 <th>작성시간</th>
-                <th></th>
-                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -41,17 +39,6 @@
                 <td th:text="${post.viewCount}"></td>
                 <td th:text="${post.createdName}"></td>
                 <td th:text="${post.createdDate}"></td>
-                <td>
-                    <a href="#" th:href="@{/posts/{postId}/edit (postId=${post.id})}"
-                       class="btn btn-primary"
-                       role="button"
-                       sec:authorize="isAuthenticated()">수정</a>
-                </td>
-                <td>
-                    <button th:id="${post.id}" class="btn btn-primary" onclick="deletePost(this.id)"
-                            sec:authorize="isAuthenticated()">삭제
-                    </button>
-                </td>
             </tr>
             </tbody>
         </table>
