@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/header::header"/>
+
+<body>
+<div class="container">
+    <div class="header">
+        <ul class="nav nav-pills pull-right">
+            <li><a href="/">Home</a></li>
+        </ul>
+        <h3 class="text-muted">에러 페이지</h3>
+    </div>
+    <div class="py-2 border-bottom">
+        <h3 class="py-2">에러 정보</h3>
+        <div th:text="|STATUS : ${status}"></div>
+        <div th:text="|TYPE : ${type}"></div>
+        <div th:text="|MESSAGE : ${message}"></div>
+        <div th:text="|TIMESTAMP : ${timestamp}"></div>
+        <br>
+        <button class="btn btn-secondary" onclick="backPage()">돌아가기</button>
+    </div>
+    <div class="py-2">
+        <h3 class="py-2">에러 목록</h3>
+        <div class="border border-danger rounded p-3" data-spy="scroll" style="height: 400px;overflow: auto;">
+            <div th:each="s : ${exception}">
+                <div th:text="${s}"></div>
+            </div>
+        </div>
+        <small class="text-muted"> * 스크롤 하십시오</small>
+    </div>
+</div>
+</body>
+<script>
+    const backPage = () => {
+        location.href = "http://localhost:8081/"
+    }
+</script>
+</html>
