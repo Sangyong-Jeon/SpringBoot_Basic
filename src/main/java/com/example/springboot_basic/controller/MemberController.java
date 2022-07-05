@@ -35,7 +35,7 @@ public class MemberController {
     @PostMapping(value = "members/new")
     public String create(@Valid MemberForm form, BindingResult result) {
         if (result.hasErrors()) {
-            return "member/createMemberForm";
+            return "member/member-form";
         }
         memberService.join(form);
         return "redirect:/";

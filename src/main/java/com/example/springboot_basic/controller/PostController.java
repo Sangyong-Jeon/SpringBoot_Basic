@@ -6,9 +6,12 @@ import com.example.springboot_basic.dto.post.PostForm;
 import com.example.springboot_basic.dto.post.PostInfoResponse;
 import com.example.springboot_basic.dto.post.PostSearch;
 import com.example.springboot_basic.dto.post.PostsResponse;
+import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.service.PostService;
+import com.example.springboot_basic.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,8 +27,9 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    public final ResponseUtil responseUtil;
 
-    // 게시글 등록
+    // 게시글 등록 페이지
     @GetMapping("/posts/new")
     public String createPost(Model model) {
         model.addAttribute("form", new PostForm());
@@ -52,7 +56,7 @@ public class PostController {
         return "post/post-list";
     }
 
-    // 게시글 수정
+    // 게시글 수정 페이지
     @GetMapping("/posts/{postId}/edit")
     public String updatePostForm(@PathVariable("postId") Long postId, Model model) {
         PostInfoResponse postInfo = postService.findPost(postId);
@@ -60,20 +64,7 @@ public class PostController {
         return "post/post-form-update";
     }
 
-    @PostMapping("/posts/{postId}/edit")
-    public String updatePost(@ModelAttribute("form") PostInfoResponse form, RedirectAttributes redirectAttributes) throws IOException {
-        Long postId = postService.updatePost(form);
-        redirectAttributes.addAttribute("postId", postId);
-        return "redirect:/posts/{postId}";
-    }
-
-    // 게시글 삭제
-    @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Object> deletePost(@PathVariable("postId") Long postId) {
-        return postService.deletePost(postId);
-    }
-
-    // 게시글 상세조회
+    // 게시글 상세조회 페이지
     @GetMapping("/posts/{postId}")
     public String postInfo(@PathVariable("postId") Long postId, Model model) {
         PostInfoResponse postInfo = postService.findPost(postId);

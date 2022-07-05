@@ -6,26 +6,26 @@
 <div class="container">
     <div th:replace="fragments/body-header :: bodyHeader"/>
 
-    <form th:object="${form}" method="post" enctype="multipart/form-data">
+    <form name="updateForm" th:object="${form}">
         <input type="hidden" th:field="*{id}"/>
 
         <div class="form-group">
             <label th:for="title">제목</label>
-            <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요"/>
+            <input name="title" type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요"/>
         </div>
         <div class="form-group">
             <label th:for="content">내용</label>
-            <textarea th:field="*{content}" class="form-control" placeholder="내용을 입력하세요"></textarea>
+            <textarea name="content" th:field="*{content}" class="form-control" placeholder="내용을 입력하세요"></textarea>
         </div>
         <div class="custom-file">
             <label th:for="imageFiles" class="custom-file-label">이미지 파일</label>
-            <input type="file" th:field="*{imageFiles}" multiple="multiple" class="custom-file-label">
+            <input name="imageFiles" type="file" th:field="*{imageFiles}" multiple="multiple" class="custom-file-label">
         </div>
         <br><br>
         <div class="row justify-content-start">
             <div class="col-3" th:each="storeImage : *{storeImageName}">
                 <div>
-                    <img class="image" th:id="${storeImage.getId()}" th:src="|/images/${storeImage.getStoreFileName()}|"
+                    <img class="image" th:id="${storeImage.getId()}" th:src="|/api/images/${storeImage.getStoreFileName()}|"
                          width="200" height="200"/>
                     <div>
                         <span th:text="${storeImage.getUploadFileName()}"></span>
@@ -37,7 +37,7 @@
             </div>
         </div>
         <br>
-        <button type="submit" class="btn btn-primary">수정</button>
+        <button type="button" class="btn btn-primary" onclick="updatePost()">수정</button>
         <button type="button" class="btn btn-secondary" th:id="*{id}" onclick="backPage(this.id)">취소</button>
         <br><br>
     </form>
@@ -47,10 +47,16 @@
 </body>
 
 <script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var postId = [[${form.id}]];
+    console.log(postId);
+    /*]]>*/
+
     const deleteImage = (imageId) => {
         $.ajax({
             type: "DELETE",
-            url: "/images/" + imageId,
+            url: "/api/images/" + imageId,
             success: (res) => {
                 console.log('삭제 성공')
                 window.location.reload(true);
@@ -65,6 +71,38 @@
 
     const backPage = (postId) => {
         location.href = "http://localhost:8081/posts/" + postId;
+    }
+
+    const updatePost = () => {
+        let form = new FormData();
+        const title = $('#title').val();
+        const content = $('#content').val();
+        form.append('id', postId);
+        form.append('title', title);
+        form.append('content', content);
+        const imageFiles = $('#imageFiles')[0].files;
+        for (let i = 0; i < imageFiles.length; i++) {
+            form.append('imageFiles', imageFiles[i]);
+        }
+
+        $.ajax({
+            method: 'PATCH',
+            url: "http://localhost:8081/api/posts/" + postId,
+            data: form,
+            enctype: 'multipart/form-data',
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: (res) => {
+                alert(res.header.message);
+                location.href = "http://localhost:8081/posts/" + postId;
+            },
+            error: (err) => {
+                const json = err.responseJSON.header;
+                console.log(json);
+                alert(json.message);
+            }
+        })
     }
 </script>
 </html>

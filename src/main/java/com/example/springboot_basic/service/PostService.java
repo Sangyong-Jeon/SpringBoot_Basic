@@ -6,13 +6,17 @@ import com.example.springboot_basic.domain.post.Post;
 import com.example.springboot_basic.dto.UploadFile;
 import com.example.springboot_basic.dto.member.MemberInfoResponse;
 import com.example.springboot_basic.dto.post.*;
-import com.example.springboot_basic.file.FileStore;
+import com.example.springboot_basic.dto.response.Header;
+import com.example.springboot_basic.dto.response.ResponseData;
+import com.example.springboot_basic.security.PrincipalDetails;
+import com.example.springboot_basic.util.FileStoreUtil;
 import com.example.springboot_basic.repository.FileRepository;
 import com.example.springboot_basic.repository.MemberRepository;
 import com.example.springboot_basic.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final FileStore fileStore;
+    private final FileStoreUtil fileStoreUtil;
     private final FileRepository fileRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
@@ -42,7 +46,7 @@ public class PostService {
                 .member(findMember.get())
                 .build();
         Post savePost = postRepository.save(post);
-        List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
+        List<UploadFile> storeImageFiles = fileStoreUtil.storeFiles(form.getImageFiles());
         storeImageFiles.forEach(file -> fileRepository.save(new File(file, savePost)));
         return savePost.getId();
     }
@@ -77,30 +81,51 @@ public class PostService {
                 .build();
     }
 
-    public Long updatePost(PostInfoResponse form) throws IOException {
+    public ResponseData<String> updatePost(PostInfoResponse form) throws IOException {
+        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = principalDetails.getMember();
         Optional<Post> findPost = postRepository.findById(form.getId());
         Post post = findPost.orElse(null);
-        if (post == null) return null;
+        if (post == null) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
+        if (!member.getLoginId().equals(post.getMember().getLoginId()))
+            return new ResponseData<>(Header.badRequest("등록한 회원이 아닙니다."), "");
         post.updateForm(form);
-        List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
-        storeImageFiles.forEach(f -> fileRepository.save(new File(f, post)));
-        return post.getId();
+        if (!form.getImageFiles().isEmpty()) {
+            List<UploadFile> storeImageFiles = fileStoreUtil.storeFiles(form.getImageFiles());
+            storeImageFiles.forEach(f -> fileRepository.save(new File(f, post)));
+        }
+        return new ResponseData<>(Header.ok("수정되었습니다."), "");
     }
 
-    public ResponseEntity<Object> deletePost(Long postId) {
+    public ResponseData<String> deletePost(Long postId) {
+        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = principalDetails.getMember();
         Optional<Post> findPost = postRepository.findById(postId);
         Post post = findPost.orElse(null);
-        if (post == null) return null;
+        if (post == null) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
+        if (!member.getLoginId().equals(post.getMember().getLoginId()))
+            return new ResponseData<>(Header.badRequest("등록한 회원이 아닙니다."), "");
         List<File> files = fileRepository.findByPost(post);
         if (files.size() > 0) {
             files.forEach(file -> {
-                String fullPath = fileStore.getFullPath(file.getStoreFileName());
+                String fullPath = fileStoreUtil.getFullPath(file.getStoreFileName());
                 java.io.File imageFile = new java.io.File(fullPath);
                 if (imageFile.exists()) imageFile.delete();
                 fileRepository.delete(file);
             });
         }
         postRepository.delete(post);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseData<>(Header.ok("게시글이 삭제되었습니다."), "");
+    }
+
+    public ResponseData<String> validatePost(Long postId) {
+        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = principalDetails.getMember();
+        Optional<Post> findPost = postRepository.findById(postId);
+        Post post = findPost.orElse(null);
+        if (post == null) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
+        if (!member.getLoginId().equals(post.getMember().getLoginId()))
+            return new ResponseData<>(Header.badRequest("등록한 회원이 아닙니다."), "");
+        return new ResponseData<>(Header.ok("게시글을 등록한 회원입니다."), "");
     }
 }

@@ -1,4 +1,4 @@
-package com.example.springboot_basic.file;
+package com.example.springboot_basic.util;
 
 
 import com.example.springboot_basic.dto.UploadFile;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 // 멀티파트 파일을 서버에 저장하는 역할을 담당한다.
 @Component
-public class FileStore {
+public class FileStoreUtil {
 
     @Value("${file.dir}")
     private String fileDir;

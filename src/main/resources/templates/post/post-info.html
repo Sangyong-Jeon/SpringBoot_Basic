@@ -14,7 +14,7 @@
         <div class="row justify-content-start py-2">
             <div class="col-3" th:each="storeImage : ${post.storeImageName}">
                 <div class="text-center">
-                    <img class="image" th:src="|/images/${storeImage.storeFileName}|" width="200" height="200">
+                    <img class="image" th:src="|/api/images/${storeImage.storeFileName}|" width="200" height="200">
                     <div>
                         <small th:text="${storeImage.uploadFileName}"></small>
                     </div>
@@ -30,11 +30,8 @@
     </div>
     <div class="py-2">
         <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
-        <a class="btn btn-primary" role="button" th:href="@{/posts/{postId}/edit (postId=${post.id})}"
-           sec:authorize="isAuthenticated()">수정</a>
-        <button th:id="${post.id}" class="btn btn-primary" onclick="deletePost(this.id)"
-                sec:authorize="isAuthenticated()">삭제
-        </button>
+        <button class="btn btn-primary" onclick="validatePost()" sec:authorize="isAuthenticated()">수정</button>
+        <button class="btn btn-primary" onclick="deletePost()" sec:authorize="isAuthenticated()">삭제</button>
     </div>
     <div class="py-2">
         <div>
@@ -44,22 +41,44 @@
 </div>
 </body>
 <script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var postId = [[${post.id}]];
+    console.log(postId);
+    /*]]>*/
+
     const backPage = () => {
         location.href = "http://localhost:8081/posts"
     }
 
-    const deletePost = (postId) => {
+    const deletePost = () => {
         $.ajax({
             type: "DELETE",
-            url: "/posts/" + postId,
+            url: "/api/posts/" + postId,
+            dataType: 'json',
             success: (res) => {
-                console.log('게시글 삭제 완료');
+                alert(res.header.message);
                 location.href = "/posts";
             },
-            error: (XMLHttpRequest, textStatus, errorThrown) => {
-                console.log(XMLHttpRequest);
-                console.log(textStatus);
-                console.log(errorThrown);
+            error: (err) => {
+                const json = err.responseJSON.header;
+                console.log(json);
+                alert(json.message);
+            }
+        })
+    }
+
+    const validatePost = () => {
+        $.ajax({
+            method: "GET",
+            url: "/api/posts/" + postId,
+            success: (res) => {
+                location.href = "/posts/" + postId + "/edit";
+            },
+            error: (err) => {
+                const json = err.responseJSON.header;
+                console.log(json);
+                alert(json.message);
             }
         })
     }

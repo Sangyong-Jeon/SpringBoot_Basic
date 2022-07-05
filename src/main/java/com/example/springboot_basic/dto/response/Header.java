@@ -18,4 +18,16 @@ public class Header {
         this.code = code;
         this.message = message;
     }
+
+    public static Header ok(String message) {
+        return new Header("200", "OK", message);
+    }
+
+    public static Header movedPermanently(String message) {
+        return new Header("301", "MOVED_PERMANENTLY", message);
+    }
+
+    public static Header badRequest(String message) {
+        return new Header("400", "BAD_REQUEST", message);
+    }
 }

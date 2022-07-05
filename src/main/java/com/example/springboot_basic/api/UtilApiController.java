@@ -1,32 +1,29 @@
-package com.example.springboot_basic.controller;
+package com.example.springboot_basic.api;
 
-import com.example.springboot_basic.file.FileStore;
+import com.example.springboot_basic.util.FileStoreUtil;
 import com.example.springboot_basic.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-public class UtilController {
+@RequestMapping("/api")
+public class UtilApiController {
 
-    private final FileStore fileStore;
+    private final FileStoreUtil fileStoreUtil;
     private final FileService fileService;
 
     // <img> 태그로 이미지를 조회할 때 사용한다.
     // UrlResource로 이미지 파일을 읽어서 @ResponseBody로 이미지 바이너리를 반환한다.
-    @ResponseBody
     @GetMapping("/images/{filename}")
     public Resource showImage(@PathVariable("filename") String filename) throws MalformedURLException {
-        return new UrlResource("file:" + fileStore.getFullPath(filename));
+        return new UrlResource("file:" + fileStoreUtil.getFullPath(filename));
     }
 
     /*
