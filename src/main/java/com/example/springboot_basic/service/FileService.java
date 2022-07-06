@@ -9,8 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Service
@@ -27,8 +29,9 @@ public class FileService {
         if (file == null) return null;
         String storeFileName = file.getStoreFileName();
         String uploadFileName = file.getUploadFileName();
+        String encodedUploadFileName = UriUtils.encode(uploadFileName, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodedUploadFileName + "\"";
         UrlResource resource = new UrlResource("file:" + fileStoreUtil.getFullPath(storeFileName));
-        String contentDisposition = "attachment; filename=\"" + uploadFileName + "\"";
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);

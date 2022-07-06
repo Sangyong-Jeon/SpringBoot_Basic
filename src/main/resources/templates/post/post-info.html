@@ -16,7 +16,9 @@
                 <div class="text-center">
                     <img class="image" th:src="|/api/images/${storeImage.storeFileName}|" width="200" height="200">
                     <div>
-                        <small th:text="${storeImage.uploadFileName}"></small>
+                        <a th:href="@{/api/images/{fileId}/attach (fileId=${storeImage.id})}">
+                            <small th:text="${storeImage.uploadFileName}"></small>
+                        </a>
                     </div>
                 </div>
             </div>
