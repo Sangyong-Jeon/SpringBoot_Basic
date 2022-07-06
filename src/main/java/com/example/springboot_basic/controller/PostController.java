@@ -36,6 +36,7 @@ public class PostController {
         return "post/post-form";
     }
 
+    // 게시글 등록
     @PostMapping("/posts/new")
     public String savePost(@ModelAttribute PostForm postForm,
                            RedirectAttributes redirectAttributes,

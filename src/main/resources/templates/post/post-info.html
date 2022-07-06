@@ -30,15 +30,22 @@
             <span class="col-3"><small th:text="|수정일시 : ${post.updatedDate}|"></small></span>
         </div>
     </div>
-    <div class="py-2">
-        <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
-        <button class="btn btn-primary" onclick="validatePost()" sec:authorize="isAuthenticated()">수정</button>
-        <button class="btn btn-primary" onclick="deletePost()" sec:authorize="isAuthenticated()">삭제</button>
-    </div>
-    <div class="py-2">
-        <div>
-            댓글부분
+    <div class="py-2 row justify-content-end">
+        <div class="col-auto">
+            <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
+            <button class="btn btn-primary" onclick="validatePost()" sec:authorize="isAuthenticated()">수정</button>
+            <button class="btn btn-primary" onclick="deletePost()" sec:authorize="isAuthenticated()">삭제</button>
         </div>
+    </div>
+    <div class="py-2 border-bottom">
+        댓글
+    </div>
+    <div class="py-3">
+        <textarea id="comment" placeholder="댓글을 입력하세요" style="width:100%" rows="3"></textarea>
+        <button class="btn btn-primary" onclick="addComment()">댓글 등록</button>
+    </div>
+    <div class="py-3">
+        등록한 댓글 보여지는 부분
     </div>
 </div>
 </body>
@@ -81,6 +88,27 @@
                 const json = err.responseJSON.header;
                 console.log(json);
                 alert(json.message);
+            }
+        })
+    }
+
+    const addComment = () => {
+        const commentForm = {
+            content: $("#comment").val(),
+            postId: postId,
+        };
+
+        $.ajax({
+            method: "POST",
+            url: "/api/comment",
+            data: JSON.stringify(commentForm),
+            contentType: 'application/json',
+            success: (res) => {
+                console.log(res);
+                alert(res.header.message);
+            },
+            error: (err) => {
+                console.log(err);
             }
         })
     }
