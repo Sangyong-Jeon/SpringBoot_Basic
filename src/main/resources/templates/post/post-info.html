@@ -45,7 +45,13 @@
         <button class="btn btn-primary" onclick="addComment()">댓글 등록</button>
     </div>
     <div class="py-3">
-        등록한 댓글 보여지는 부분
+        <div class="border-bottom border-top py-2" th:each="comment : ${post.comments}">
+            <strong th:text="${comment.createdBy}"></strong>
+            <div th:text="${comment.content}"></div>
+            <small class="text-muted" th:text="${comment.createdDate}"></small>
+            <br>
+            <button class="btn btn-outline-secondary btn-sm">답글</button>
+        </div>
     </div>
 </div>
 </body>

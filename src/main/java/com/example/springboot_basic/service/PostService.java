@@ -1,13 +1,16 @@
 package com.example.springboot_basic.service;
 
+import com.example.springboot_basic.domain.comment.Comment;
 import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.domain.post.File;
 import com.example.springboot_basic.domain.post.Post;
 import com.example.springboot_basic.dto.UploadFile;
+import com.example.springboot_basic.dto.comment.CommentResponse;
 import com.example.springboot_basic.dto.member.MemberInfoResponse;
 import com.example.springboot_basic.dto.post.*;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
+import com.example.springboot_basic.repository.CommentRepository;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.util.FileStoreUtil;
 import com.example.springboot_basic.repository.FileRepository;
@@ -25,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -35,6 +39,7 @@ public class PostService {
     private final FileRepository fileRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
 
     public Long savePost(PostForm form, MemberInfoResponse memberInfo) throws IOException {
         Optional<Member> findMember = memberRepository.findById(memberInfo.getId());
@@ -69,6 +74,9 @@ public class PostService {
         if (post == null) return null;
         List<File> files = fileRepository.findByPost(post);
         List<FilesResponse> storeImageName = files.stream().map(FilesResponse::new).collect(Collectors.toList());
+
+        List<Comment> comments = commentRepository.findByPost(post);
+        List<CommentResponse> commentResponses = comments.stream().map(CommentResponse::new).collect(Collectors.toList());
         return PostInfoResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -78,6 +86,7 @@ public class PostService {
                 .createdDate(post.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .updatedDate(post.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .storeImageName(storeImageName)
+                .comments(commentResponses)
                 .build();
     }
 

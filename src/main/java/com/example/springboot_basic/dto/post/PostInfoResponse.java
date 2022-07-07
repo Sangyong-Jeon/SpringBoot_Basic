@@ -1,5 +1,6 @@
 package com.example.springboot_basic.dto.post;
 
+import com.example.springboot_basic.dto.comment.CommentResponse;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +22,10 @@ public class PostInfoResponse {
     private String updatedDate;
     private List<FilesResponse> storeImageName = new ArrayList<>();
     private List<MultipartFile> imageFiles = new ArrayList<>();
+    private List<CommentResponse> comments = new ArrayList<>();
 
     @Builder
-    public PostInfoResponse(Long id, String title, String content, int viewCount, String createdName, String createdDate, String updatedDate, List<FilesResponse> storeImageName) {
+    public PostInfoResponse(Long id, String title, String content, int viewCount, String createdName, String createdDate, String updatedDate, List<FilesResponse> storeImageName, List<CommentResponse> comments) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -32,5 +34,6 @@ public class PostInfoResponse {
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.storeImageName = storeImageName;
+        this.comments = comments;
     }
 }
