@@ -104,6 +104,11 @@
             postId: postId,
         };
 
+        if(!commentForm.content.length > 0 || commentForm.content == "" || commentForm.content == " ") {
+            alert('댓글을 올바르게 입력해주세요.');
+            return;
+        }
+
         $.ajax({
             method: "POST",
             url: "/api/comment",
