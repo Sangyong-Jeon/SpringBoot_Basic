@@ -45,12 +45,30 @@
         <button class="btn btn-primary" onclick="addComment()">댓글 등록</button>
     </div>
     <div class="py-3">
-        <div class="border-bottom border-top py-2" th:each="comment : ${post.comments}">
-            <strong th:text="${comment.createdBy}"></strong>
-            <div th:text="${comment.content}"></div>
-            <small class="text-muted" th:text="${comment.createdDate}"></small>
-            <br>
-            <button class="btn btn-outline-secondary btn-sm">답글</button>
+        <div class="border-bottom border-top" style="padding-bottom: 0px" th:each="comment : ${post.comments}">
+            <div class="py-3">
+                <strong th:text="${comment.createdBy}"></strong>
+                <div th:text="${comment.content}"></div>
+                <small class="text-muted" th:text="${comment.createdDate}"></small>
+                <br>
+                <button class="btn btn-sm btn-outline-secondary">답글</button>
+            </div>
+            <div class="py-2 border-top" style="background-color: rgba(80,80,80,0.025)">
+                <div class="ml-5">
+                    <div class="py-2 border-bottom" th:each="child : ${comment.childComments}">
+                        <strong th:text="${child.createdBy}"></strong>
+                        <div th:text="${child.content}"></div>
+                        <small class="text-muted" th:text="${child.createdDate}"></small>
+                    </div>
+                    <div class="py-2">
+                        <textarea th:id="|childComment${comment.id}|" placeholder="댓글을 입력하세요" style="width: 100%"
+                                  rows="3"></textarea>
+                        <button th:id="${comment.id}" class="btn btn-secondary" onclick="addChildComment(this.id)">댓글
+                            등록
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -104,7 +122,7 @@
             postId: postId,
         };
 
-        if(!commentForm.content.length > 0 || commentForm.content == "" || commentForm.content == " ") {
+        if (!commentForm.content.length > 0 || commentForm.content == "" || commentForm.content == " ") {
             alert('댓글을 올바르게 입력해주세요.');
             return;
         }
@@ -112,6 +130,31 @@
         $.ajax({
             method: "POST",
             url: "/api/comment",
+            data: JSON.stringify(commentForm),
+            contentType: 'application/json',
+            success: (res) => {
+                console.log(res);
+                alert(res.header.message);
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        })
+    }
+
+    const addChildComment = (parentId) => {
+        const commentForm = {
+            content: $("#childComment" + parentId).val(),
+            postId: postId,
+            parentId: parentId,
+        };
+        if (!commentForm.content.length > 0 || commentForm.content == "" || commentForm.content == " ") {
+            alert('댓글을 올바르게 입력해주세요.');
+            return;
+        }
+        $.ajax({
+            method: "POST",
+            url: '/api/comment',
             data: JSON.stringify(commentForm),
             contentType: 'application/json',
             success: (res) => {

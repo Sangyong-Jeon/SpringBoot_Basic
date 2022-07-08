@@ -44,7 +44,12 @@ public class CommentService {
             parent = findParent.orElse(null);
         }
         // 4. 댓글 생성
-        Comment comment = Comment.createUserComment(commentForm.getContent(), parent, member, findPost.get());
+        Comment comment = Comment.builder()
+                .content(commentForm.getContent())
+                .parent(parent)
+                .member(member)
+                .post(findPost.get())
+                .build();
         commentRepository.save(comment);
         return new ResponseData<>(Header.ok("댓글이 등록되었습니다."), "");
     }

@@ -75,7 +75,7 @@ public class PostService {
         List<File> files = fileRepository.findByPost(post);
         List<FilesResponse> storeImageName = files.stream().map(FilesResponse::new).collect(Collectors.toList());
 
-        List<Comment> comments = commentRepository.findByPost(post);
+        List<Comment> comments = commentRepository.findCommentsForPost(post);
         List<CommentResponse> commentResponses = comments.stream().map(CommentResponse::new).collect(Collectors.toList());
         return PostInfoResponse.builder()
                 .id(post.getId())
