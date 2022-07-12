@@ -23,7 +23,7 @@ spring:
 logging:
   level:
     org:
-#      hibernate.SQL: debug
+      hibernate.SQL: debug
 #      apache.coyote.http11: debug
 file.dir: /Users/yong/Documents/GitHub/SpringBoot_Basic/src/main/resources/static
 server:

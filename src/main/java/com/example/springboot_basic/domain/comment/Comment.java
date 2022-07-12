@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "COM_PARENT_ID")
     private Comment parent; // 계층구조
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "parent") // 자식은 여러명 가질 수 있으니 1:N
     private List<Comment> child = new ArrayList<>();
 
