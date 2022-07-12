@@ -60,15 +60,17 @@ public class PostController {
     // 게시글 수정 페이지
     @GetMapping("/posts/{postId}/edit")
     public String updatePostForm(@PathVariable("postId") Long postId, Model model) {
-        PostInfoResponse postInfo = postService.findPost(postId);
+        PostInfoResponse postInfo = postService.findPost(postId, false);
         model.addAttribute("form", postInfo);
         return "post/post-form-update";
     }
 
     // 게시글 상세조회 페이지
     @GetMapping("/posts/{postId}")
-    public String postInfo(@PathVariable("postId") Long postId, Model model) {
-        PostInfoResponse postInfo = postService.findPost(postId);
+    public String postInfo(@PathVariable("postId") Long postId,
+                           @RequestParam(value = "isView", defaultValue = "0") boolean isView,
+                           Model model) {
+        PostInfoResponse postInfo = postService.findPost(postId, isView);
         model.addAttribute("post", postInfo);
         return "post/post-info";
     }

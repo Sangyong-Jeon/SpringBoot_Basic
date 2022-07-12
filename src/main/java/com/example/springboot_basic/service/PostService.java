@@ -68,13 +68,13 @@ public class PostService {
         return postsDto;
     }
 
-    public PostInfoResponse findPost(Long postId) {
+    public PostInfoResponse findPost(Long postId, boolean isView) {
         Optional<Post> findPost = postRepository.findById(postId);
         Post post = findPost.orElse(null);
         if (post == null) return null;
+        if (isView) post.addViewCount();
         List<File> files = fileRepository.findByPost(post);
         List<FilesResponse> storeImageName = files.stream().map(FilesResponse::new).collect(Collectors.toList());
-
         List<Comment> comments = commentRepository.findCommentsForPost(post);
         List<CommentResponse> commentResponses = comments.stream().map(CommentResponse::new).collect(Collectors.toList());
         return PostInfoResponse.builder()

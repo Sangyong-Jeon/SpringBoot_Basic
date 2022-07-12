@@ -134,7 +134,7 @@
             contentType: 'application/json',
             success: (res) => {
                 console.log(res);
-                location.reload()
+                location.href = "/posts/" + postId;
             },
             error: (err) => {
                 console.log(err);
@@ -159,7 +159,7 @@
             contentType: 'application/json',
             success: (res) => {
                 console.log(res);
-                location.reload()
+                location.href = "/posts/" + postId;
             },
             error: (err) => {
                 console.log(err);

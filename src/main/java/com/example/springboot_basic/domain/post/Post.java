@@ -53,4 +53,8 @@ public class Post extends BaseEntity {
         this.title = form.getTitle();
         this.content = form.getContent();
     }
+
+    public void addViewCount() {
+        this.viewCount++;
+    }
 }
