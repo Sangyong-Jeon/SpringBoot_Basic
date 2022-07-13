@@ -45,7 +45,7 @@ public class PostController {
         MemberInfoResponse memberInfo = new MemberInfoResponse(member);
         Long postId = postService.savePost(postForm, memberInfo);
         redirectAttributes.addAttribute("postId", postId);
-        return "redirect:/posts/{postId}";
+        return "redirect:/posts";
     }
 
     // 게시글 리스트 페이지

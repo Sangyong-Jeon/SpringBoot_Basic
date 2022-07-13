@@ -33,8 +33,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="post : ${posts}" onclick="movePostInfoPage(this)">
-                <td th:text="${post.id}"></td>
+            <tr th:each="post,index : ${posts}" onclick="movePostInfoPage(this)">
+                <td th:id="${post.id}" th:text="${index.count}"></td>
                 <td th:text="${post.title}"></td>
                 <td th:text="${post.viewCount}"></td>
                 <td th:text="${post.createdName}"></td>
@@ -54,7 +54,7 @@
     }
 
     const movePostInfoPage = (res) => {
-        location.href = "http://localhost:8081/posts/" + $(res).children().eq(0).text() + "?isView=1";
+        location.href = "http://localhost:8081/posts/" + $(res).children().eq(0).attr('id') + "?isView=1";
     }
 </script>
 </html>
