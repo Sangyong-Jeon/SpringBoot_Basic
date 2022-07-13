@@ -47,7 +47,8 @@
     <div class="py-3">
         <div class="border-bottom border-top" style="padding-bottom: 0px" th:each="comment : ${post.comments}">
             <div class="py-3">
-                <strong th:text="${comment.createdBy}"></strong>
+                <strong th:if="${comment.createdBy.equals('anonymousUser')}">익명</strong>
+                <strong th:unless="${comment.createdBy.equals('anonymousUser')}" th:text="${comment.createdBy}"></strong>
                 <div th:text="${comment.content}"></div>
                 <small class="text-muted" th:text="${comment.createdDate}"></small>
                 <br>
@@ -56,7 +57,8 @@
             <div class="py-2 border-top" style="background-color: rgba(80,80,80,0.025)">
                 <div class="ml-5">
                     <div class="py-2 border-bottom" th:each="child : ${comment.childComments}">
-                        <strong th:text="${child.createdBy}"></strong>
+                        <strong th:if="${child.createdBy.equals('anonymousUser')}">익명</strong>
+                        <strong th:unless="${child.createdBy.equals('anonymousUser')}" th:text="${child.createdBy}"></strong>
                         <div th:text="${child.content}"></div>
                         <small class="text-muted" th:text="${child.createdDate}"></small>
                     </div>
