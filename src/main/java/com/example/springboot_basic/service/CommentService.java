@@ -13,6 +13,7 @@ import com.example.springboot_basic.security.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 댓글 등록
     public ResponseData<String> addComment(CommentForm commentForm) {
@@ -32,10 +34,13 @@ public class CommentService {
         if (!findPost.isPresent()) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
         // 2. 회원이 있는가?
         Member member = null;
+        String password = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.getName().equals("anonymousUser")) { // 로그인 확인 여부
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             member = principalDetails.getMember();
+        } else {
+            password = bCryptPasswordEncoder.encode(commentForm.getPassword());
         }
         // 3. 대댓글인가?
         Comment parent = null;
@@ -43,9 +48,10 @@ public class CommentService {
             Optional<Comment> findParent = commentRepository.findById(commentForm.getParentId());
             parent = findParent.orElse(null);
         }
-        // 4. 댓글 생성
+        // 5. 댓글 생성
         Comment comment = Comment.builder()
                 .content(commentForm.getContent())
+                .password(password)
                 .parent(parent)
                 .member(member)
                 .post(findPost.get())

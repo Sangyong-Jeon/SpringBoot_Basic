@@ -30,6 +30,9 @@ public class Comment extends BaseEntity {
     @Column(name = "CONTENT")
     private String content;
 
+    @Column(name = "password")
+    private String password;
+
     // @JoinColumn에는 referencedColumnName 속성이 있는데 이게 바로 대상 테이블의 PK를 지정하는 것이다.
     // 따라서 이 속성의 기본값으로는 현재 설정해놓은 대상 테이블의 PK를 지정한다.
     // 그러므로 "COM_PARENT_ID" 는 FK이고, 이 FK가 가리키는 곳이 Comment의 PK인 "COM_ID" 이다.
@@ -50,9 +53,10 @@ public class Comment extends BaseEntity {
     private Post post;
 
     @Builder
-    public Comment(Long id, String content, Comment parent, Member member, Post post) {
+    public Comment(Long id, String content, String password, Comment parent, Member member, Post post) {
         this.id = id;
         this.content = content;
+        this.password = password;
         this.parent = parent;
         this.member = member;
         this.post = post;

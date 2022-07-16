@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/header :: header"/>
 <body>
 <div class="container">
@@ -42,13 +42,18 @@
     </div>
     <div class="py-3">
         <textarea id="comment" placeholder="댓글을 입력하세요" style="width:100%" rows="3"></textarea>
+        <div class="py-2" sec:authorize="isAnonymous()">
+            <label for="parent_password">비밀번호</label>
+            <input type="password" id="parent_password">
+        </div>
         <button class="btn btn-primary" onclick="addComment()">댓글 등록</button>
     </div>
     <div class="py-3">
         <div class="border-bottom border-top" style="padding-bottom: 0px" th:each="comment : ${post.comments}">
             <div class="py-3">
                 <strong th:if="${comment.createdBy.equals('anonymousUser')}">익명</strong>
-                <strong th:unless="${comment.createdBy.equals('anonymousUser')}" th:text="${comment.createdBy}"></strong>
+                <strong th:unless="${comment.createdBy.equals('anonymousUser')}"
+                        th:text="${comment.createdBy}"></strong>
                 <div th:text="${comment.content}"></div>
                 <small class="text-muted" th:text="${comment.createdDate}"></small>
                 <br>
@@ -58,15 +63,20 @@
                 <div class="ml-5">
                     <div class="py-2 border-bottom" th:each="child : ${comment.childComments}">
                         <strong th:if="${child.createdBy.equals('anonymousUser')}">익명</strong>
-                        <strong th:unless="${child.createdBy.equals('anonymousUser')}" th:text="${child.createdBy}"></strong>
+                        <strong th:unless="${child.createdBy.equals('anonymousUser')}"
+                                th:text="${child.createdBy}"></strong>
                         <div th:text="${child.content}"></div>
                         <small class="text-muted" th:text="${child.createdDate}"></small>
                     </div>
                     <div class="py-2">
-                        <textarea th:id="|childComment${comment.id}|" placeholder="댓글을 입력하세요" style="width: 100%"
+                        <textarea th:id="|child_comment${comment.id}|" placeholder="댓글을 입력하세요" style="width: 100%"
                                   rows="3"></textarea>
-                        <button th:id="${comment.id}" class="btn btn-secondary" onclick="addChildComment(this.id)">댓글
-                            등록
+                        <div class="py-2" sec:authorize="isAnonymous()">
+                            <label th:for="|child_password${comment.id}|">비밀번호</label>
+                            <input type="password" th:id="|child_password${comment.id}|">
+                        </div>
+                        <button th:id="${comment.id}" class="btn btn-secondary" onclick="addChildComment(this.id)">
+                            댓글 등록
                         </button>
                     </div>
                 </div>
@@ -118,16 +128,25 @@
         })
     }
 
+    const validateStr = (str) => {
+        if (!str.length > 0 || str === "" || str === " ") {
+            if (str === 'content') alert("댓글을 올바르게 입력해주세요");
+            else alert("비밀번호를 올바르게 입력해주세요");
+            return false;
+        }
+        return true;
+    }
+
     const addComment = () => {
         const commentForm = {
             content: $("#comment").val(),
+            password: $("#parent_password").val(),
             postId: postId,
         };
 
-        if (!commentForm.content.length > 0 || commentForm.content == "" || commentForm.content == " ") {
-            alert('댓글을 올바르게 입력해주세요.');
-            return;
-        }
+        if(!validateStr(commentForm.content)) return
+        if(commentForm.password !== undefined)
+            if(!validateStr(commentForm.password)) return
 
         $.ajax({
             method: "POST",
@@ -146,14 +165,16 @@
 
     const addChildComment = (parentId) => {
         const commentForm = {
-            content: $("#childComment" + parentId).val(),
+            content: $("#child_comment" + parentId).val(),
+            password: $("#child_password" + parentId).val(),
             postId: postId,
             parentId: parentId,
         };
-        if (!commentForm.content.length > 0 || commentForm.content == "" || commentForm.content == " ") {
-            alert('댓글을 올바르게 입력해주세요.');
-            return;
-        }
+
+        if(!validateStr(commentForm.content)) return
+        if(commentForm.password !== undefined)
+            if(!validateStr(commentForm.password)) return
+
         $.ajax({
             method: "POST",
             url: '/api/comment',

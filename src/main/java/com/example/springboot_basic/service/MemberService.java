@@ -23,7 +23,7 @@ public class MemberService {
         validateDuplicateMember(memberForm);
         Member member = Member.builder()
                 .loginId(memberForm.getLoginId())
-                .password(bCryptPasswordEncoder.encode(memberForm.getPassword())) // 나중에 암호화
+                .password(bCryptPasswordEncoder.encode(memberForm.getPassword()))
                 .name(memberForm.getName())
                 .role(memberForm.getRole())
                 .build();
