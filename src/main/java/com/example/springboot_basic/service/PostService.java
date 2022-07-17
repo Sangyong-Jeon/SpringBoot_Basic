@@ -114,6 +114,7 @@ public class PostService {
         if (post == null) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
         if (!member.getLoginId().equals(post.getMember().getLoginId()))
             return new ResponseData<>(Header.badRequest("등록한 회원이 아닙니다."), "");
+        // 파일 삭제
         List<File> files = fileRepository.findByPost(post);
         if (files.size() > 0) {
             files.forEach(file -> {
@@ -123,6 +124,12 @@ public class PostService {
                 fileRepository.delete(file);
             });
         }
+        // 댓글 삭제
+        List<Comment> comments = commentRepository.findCommentsForPost(post);
+        comments.forEach(c -> {
+            if (c.getChild().size() > 0) commentRepository.deleteAllInBatch(c.getChild());
+        });
+        commentRepository.deleteAllInBatch(comments);
         postRepository.delete(post);
         return new ResponseData<>(Header.ok("게시글이 삭제되었습니다."), "");
     }
