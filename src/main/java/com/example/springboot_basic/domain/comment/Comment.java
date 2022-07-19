@@ -40,8 +40,8 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "COM_PARENT_ID")
     private Comment parent; // 계층구조
 
-    @BatchSize(size = 100)
-    @OneToMany(mappedBy = "parent") // 자식은 여러명 가질 수 있으니 1:N
+//    @BatchSize(size = 100) // 프록시 객체를 조회할 때 여러개를 IN절 쿼리로 만들어줌
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY) // 자식은 여러명 가질 수 있으니 1:N
     private List<Comment> child = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
