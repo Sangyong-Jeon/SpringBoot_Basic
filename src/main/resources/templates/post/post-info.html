@@ -128,9 +128,9 @@
         })
     }
 
-    const validateStr = (str) => {
+    const validateStr = (type, str) => {
         if (!str.length > 0 || str === "" || str === " ") {
-            if (str === 'content') alert("댓글을 올바르게 입력해주세요");
+            if (type === 'content') alert("댓글을 올바르게 입력해주세요");
             else alert("비밀번호를 올바르게 입력해주세요");
             return false;
         }
@@ -144,9 +144,9 @@
             postId: postId,
         };
 
-        if(!validateStr(commentForm.content)) return
-        if(commentForm.password !== undefined)
-            if(!validateStr(commentForm.password)) return
+        if (!validateStr('content', commentForm.content)) return
+        if (commentForm.password !== undefined)
+            if (!validateStr('password', commentForm.password)) return
 
         $.ajax({
             method: "POST",
@@ -171,9 +171,9 @@
             parentId: parentId,
         };
 
-        if(!validateStr(commentForm.content)) return
-        if(commentForm.password !== undefined)
-            if(!validateStr(commentForm.password)) return
+        if (!validateStr('content', commentForm.content)) return
+        if (commentForm.password !== undefined)
+            if (!validateStr('password', commentForm.password)) return
 
         $.ajax({
             method: "POST",
