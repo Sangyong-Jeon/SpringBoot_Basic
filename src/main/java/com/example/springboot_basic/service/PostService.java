@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -126,9 +127,11 @@ public class PostService {
         }
         // 댓글 삭제
         List<Comment> comments = commentRepository.findCommentsForPost(post);
+        List<Comment> childs = new ArrayList<>();
         comments.forEach(c -> {
-            if (c.getChild().size() > 0) commentRepository.deleteAllInBatch(c.getChild());
+            if (c.getChild().size() > 0) childs.addAll(c.getChild());
         });
+        commentRepository.deleteAllInBatch(childs);
         commentRepository.deleteAllInBatch(comments);
         postRepository.delete(post);
         return new ResponseData<>(Header.ok("게시글이 삭제되었습니다."), "");
