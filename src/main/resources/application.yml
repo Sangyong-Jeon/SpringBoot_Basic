@@ -15,6 +15,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.Oracle10gDialect
         default_batch_fetch_size: 100 # 애플리케이션 전역에 @BatchSize를 적용하여 지연로딩으로 생기는 N+1 문제를 해결. @BatchSize는 개별적으로 엔티티 또는 필드에 세세하게 설정 가능함.
+#    open-in-view: false # OSIV 종료
   thymeleaf:
     cache: false
   servlet:
