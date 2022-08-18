@@ -10,7 +10,7 @@ import com.example.springboot_basic.dto.member.MemberInfoResponse;
 import com.example.springboot_basic.dto.post.*;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
-import com.example.springboot_basic.exception.PostNotExsistException;
+import com.example.springboot_basic.exception.PostNotExistException;
 import com.example.springboot_basic.repository.CommentRepository;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.util.FileStoreUtil;
@@ -70,7 +70,7 @@ public class PostService {
     public PostInfoResponse findPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .map(Post::addViewCount)
-                .orElseThrow(() -> new PostNotExsistException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new PostNotExistException("게시글이 존재하지 않습니다."));
         List<FilesResponse> storeImageNames = fileRepository.findByPost(post).stream()
                 .map(FilesResponse::new)
                 .collect(Collectors.toList());
@@ -103,7 +103,7 @@ public class PostService {
     public ResponseData<String> updatePost(PostForm form, Long postId) throws IOException {
         Post post = postRepository.findById(postId)
                 .map(p -> p.updateForm(form)) // Optional에 값이 있으면 연산 수행
-                .orElseThrow(() -> new PostNotExsistException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new PostNotExistException("게시글이 존재하지 않습니다."));
         if (!form.getImageFiles().isEmpty()) {
             List<UploadFile> storeImageFiles = fileStoreUtil.storeFiles(form.getImageFiles());
             storeImageFiles.forEach(f -> fileRepository.save(new File(f, post)));

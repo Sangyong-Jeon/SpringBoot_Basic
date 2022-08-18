@@ -54,7 +54,7 @@
     }
 
     const movePostInfoPage = (res) => {
-        location.href = "http://localhost:8081/posts/" + $(res).children().eq(0).attr('id') + "?isView=1";
+        location.href = "http://localhost:8081/posts/" + $(res).children().eq(0).attr('id');
     }
 </script>
 </html>

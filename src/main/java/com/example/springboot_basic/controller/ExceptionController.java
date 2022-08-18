@@ -2,7 +2,7 @@ package com.example.springboot_basic.controller;
 
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
-import com.example.springboot_basic.exception.PostNotExsistException;
+import com.example.springboot_basic.exception.PostNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -26,8 +26,8 @@ public class ExceptionController {
         return "error/error";
     }
 
-    @ExceptionHandler(PostNotExsistException.class)
-    public ResponseEntity<ResponseData<String>> postNotValidExceptionHandler(PostNotExsistException e) {
+    @ExceptionHandler(PostNotExistException.class)
+    public ResponseEntity<ResponseData<String>> postNotValidExceptionHandler(PostNotExistException e) {
         Header header = Header.notFound(e.getMessage());
         ResponseData<String> responseData = new ResponseData<>(header, "");
         return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
