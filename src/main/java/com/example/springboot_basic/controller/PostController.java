@@ -61,10 +61,8 @@ public class PostController {
 
     // 게시글 상세조회 페이지
     @GetMapping("/posts/{postId}")
-    public String postInfo(@PathVariable("postId") Long postId,
-                           @RequestParam(value = "isView", defaultValue = "0") boolean isView,
-                           Model model) {
-        PostInfoResponse postInfo = postService.findPost(postId, isView);
+    public String postInfo(@PathVariable("postId") Long postId, Model model) {
+        PostInfoResponse postInfo = postService.findPost(postId);
         model.addAttribute("post", postInfo);
         return "post/post-info";
     }

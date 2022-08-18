@@ -67,15 +67,16 @@ public class PostService {
         return postsDto;
     }
 
-    public PostInfoResponse findPost(Long postId, boolean isView) {
-        Optional<Post> findPost = postRepository.findById(postId);
-        Post post = findPost.orElse(null);
-        if (post == null) return null;
-        if (isView) post.addViewCount();
-        List<File> files = fileRepository.findByPost(post);
-        List<FilesResponse> storeImageNames = files.stream().map(FilesResponse::new).collect(Collectors.toList());
-        List<Comment> comments = commentRepository.findCommentsForPost(post);
-        List<CommentResponse> commentResponses = comments.stream().map(CommentResponse::new).collect(Collectors.toList());
+    public PostInfoResponse findPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .map(Post::addViewCount)
+                .orElseThrow(() -> new PostNotExsistException("게시글이 존재하지 않습니다."));
+        List<FilesResponse> storeImageNames = fileRepository.findByPost(post).stream()
+                .map(FilesResponse::new)
+                .collect(Collectors.toList());
+        List<CommentResponse> commentResponses = commentRepository.findCommentsForPost(post).stream()
+                .map(CommentResponse::new)
+                .collect(Collectors.toList());
         return PostInfoResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
