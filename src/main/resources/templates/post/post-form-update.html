@@ -19,14 +19,13 @@
         </div>
         <div class="custom-file">
             <label th:for="imageFiles" class="custom-file-label">이미지 파일</label>
-            <input name="imageFiles" type="file" th:field="*{imageFiles}" multiple="multiple" class="custom-file-label">
+            <input id="imageFiles" name="imageFiles" type="file" multiple="multiple" class="custom-file-label">
         </div>
         <br><br>
         <div class="row justify-content-start">
-            <div class="col-3" th:each="storeImage : *{storeImageName}">
+            <div class="col-3" th:each="storeImage : *{storeImageNames}">
                 <div>
-                    <img class="image" th:id="${storeImage.getId()}" th:src="|/api/images/${storeImage.getStoreFileName()}|"
-                         width="200" height="200"/>
+                    <img class="image" th:id="${storeImage.getId()}" th:src="|/api/images/${storeImage.getStoreFileName()}|" width="200" height="200"/>
                     <div>
                         <span th:text="${storeImage.getUploadFileName()}"></span>
                         <input type="button" th:id="${storeImage.getId()}" class="deleteBtn btn btn-secondary"
@@ -50,7 +49,6 @@
 
     /*<![CDATA[*/
     var postId = [[${form.id}]];
-    console.log(postId);
     /*]]>*/
 
     const deleteImage = (imageId) => {
@@ -77,7 +75,6 @@
         let form = new FormData();
         const title = $('#title').val();
         const content = $('#content').val();
-        form.append('id', postId);
         form.append('title', title);
         form.append('content', content);
         const imageFiles = $('#imageFiles')[0].files;
@@ -95,12 +92,11 @@
             cache: false,
             success: (res) => {
                 alert(res.header.message);
-                location.href = "http://localhost:8081/posts/" + postId;
+                location.href = "http://localhost:8081/posts/";
             },
             error: (err) => {
-                const json = err.responseJSON.header;
-                console.log(json);
-                alert(json.message);
+                console.log(err.responseJSON.header);
+                alert(err.responseJSON.header.message);
             }
         })
     }

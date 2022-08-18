@@ -4,6 +4,7 @@ import com.example.springboot_basic.domain.post.PostCategory;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,5 +18,5 @@ public class PostForm {
     private String content;
     private PostCategory category;
     private MultipartFile attachFile;
-    private List<MultipartFile> imageFiles;
+    private List<MultipartFile> imageFiles = new ArrayList<>();
 }

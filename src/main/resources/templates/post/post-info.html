@@ -12,7 +12,7 @@
         <h2 class="text-muted">내용</h2>
         <p th:text="${post.content}"></p>
         <div class="row justify-content-start py-2">
-            <div class="col-3" th:each="storeImage : ${post.storeImageName}">
+            <div class="col-3" th:each="storeImage : ${post.storeImageNames}">
                 <div class="text-center">
                     <img class="image" th:src="|/api/images/${storeImage.storeFileName}|" width="200" height="200">
                     <div>
