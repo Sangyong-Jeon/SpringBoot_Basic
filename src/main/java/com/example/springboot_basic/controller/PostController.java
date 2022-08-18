@@ -2,17 +2,11 @@ package com.example.springboot_basic.controller;
 
 import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.dto.member.MemberInfoResponse;
-import com.example.springboot_basic.dto.post.PostForm;
-import com.example.springboot_basic.dto.post.PostInfoResponse;
-import com.example.springboot_basic.dto.post.PostSearch;
-import com.example.springboot_basic.dto.post.PostsResponse;
-import com.example.springboot_basic.dto.response.ResponseData;
+import com.example.springboot_basic.dto.post.*;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.service.PostService;
 import com.example.springboot_basic.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,10 +52,10 @@ public class PostController {
     }
 
     // 게시글 수정 페이지
-    @GetMapping("/posts/{postId}/edit")
+    @GetMapping("/posts/{postId}/update")
     public String updatePostForm(@PathVariable("postId") Long postId, Model model) {
-        PostInfoResponse postInfo = postService.findPost(postId, false);
-        model.addAttribute("form", postInfo);
+        PostEditResponse editPost = postService.findUpdatePost(postId);
+        model.addAttribute("form", editPost);
         return "post/post-form-update";
     }
 

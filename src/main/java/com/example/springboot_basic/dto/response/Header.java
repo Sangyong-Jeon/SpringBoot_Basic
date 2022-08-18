@@ -30,4 +30,8 @@ public class Header {
     public static Header badRequest(String message) {
         return new Header("400", "BAD_REQUEST", message);
     }
+
+    public static Header notFound(String message) {
+        return new Header("404", "NOT_FOUND", message);
+    }
 }

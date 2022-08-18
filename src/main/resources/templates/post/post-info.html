@@ -118,7 +118,7 @@
             method: "GET",
             url: "/api/posts/" + postId,
             success: (res) => {
-                location.href = "/posts/" + postId + "/edit";
+                location.href = "/posts/" + postId + "/update";
             },
             error: (err) => {
                 const json = err.responseJSON.header;

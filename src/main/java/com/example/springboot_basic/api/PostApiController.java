@@ -1,5 +1,6 @@
 package com.example.springboot_basic.api;
 
+import com.example.springboot_basic.dto.post.PostForm;
 import com.example.springboot_basic.dto.post.PostInfoResponse;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.service.PostService;
@@ -28,13 +29,10 @@ public class PostApiController {
     }
 
     @PatchMapping("/posts/{postId}")
-    public ResponseEntity<ResponseData<?>> updatePost(@ModelAttribute PostInfoResponse form,
+    public ResponseEntity<ResponseData<?>> updatePost(@ModelAttribute PostForm form,
                                                       @PathVariable("postId") Long postId) throws IOException, URISyntaxException {
-        System.out.println("form = " + form);
-        ResponseData<String> responseData = postService.updatePost(form);
-        HttpHeaders headers = new HttpHeaders();// 헤더를 설정하기 위해 생성
-        headers.setLocation(new URI("http://localhost:8081/posts/" + postId));// 헤더에 location 추가
-        return responseUtil.createResponseEntity(responseData, headers);
+        ResponseData<String> responseData = postService.updatePost(form, postId);
+        return responseUtil.createResponseEntity(responseData, new HttpHeaders());
     }
 
     // 게시글 삭제

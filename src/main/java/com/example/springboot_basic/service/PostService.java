@@ -10,6 +10,7 @@ import com.example.springboot_basic.dto.member.MemberInfoResponse;
 import com.example.springboot_basic.dto.post.*;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
+import com.example.springboot_basic.exception.PostNotExsistException;
 import com.example.springboot_basic.repository.CommentRepository;
 import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.util.FileStoreUtil;
@@ -17,8 +18,6 @@ import com.example.springboot_basic.repository.FileRepository;
 import com.example.springboot_basic.repository.MemberRepository;
 import com.example.springboot_basic.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -75,7 +73,7 @@ public class PostService {
         if (post == null) return null;
         if (isView) post.addViewCount();
         List<File> files = fileRepository.findByPost(post);
-        List<FilesResponse> storeImageName = files.stream().map(FilesResponse::new).collect(Collectors.toList());
+        List<FilesResponse> storeImageNames = files.stream().map(FilesResponse::new).collect(Collectors.toList());
         List<Comment> comments = commentRepository.findCommentsForPost(post);
         List<CommentResponse> commentResponses = comments.stream().map(CommentResponse::new).collect(Collectors.toList());
         return PostInfoResponse.builder()
@@ -86,20 +84,25 @@ public class PostService {
                 .createdName(post.getCreatedBy())
                 .createdDate(post.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .updatedDate(post.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .storeImageName(storeImageName)
+                .storeImageNames(storeImageNames)
                 .comments(commentResponses)
                 .build();
     }
 
-    public ResponseData<String> updatePost(PostInfoResponse form) throws IOException {
-        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Member member = principalDetails.getMember();
-        Optional<Post> findPost = postRepository.findById(form.getId());
+    public PostEditResponse findUpdatePost(Long postId) {
+        Optional<Post> findPost = postRepository.findById(postId);
         Post post = findPost.orElse(null);
-        if (post == null) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
-        if (!member.getLoginId().equals(post.getMember().getLoginId()))
-            return new ResponseData<>(Header.badRequest("등록한 회원이 아닙니다."), "");
-        post.updateForm(form);
+        if (post == null) return null;
+        List<File> files = fileRepository.findByPost(post);
+        List<FilesResponse> storeImageNames = files.stream().map(FilesResponse::new).collect(Collectors.toList());
+        return new PostEditResponse(post.getId(), post.getTitle(), post.getContent(), storeImageNames);
+    }
+
+    // orElse는 값이 있든 없든 무조건 실행, orElseGet은 값이 없을때만 실행, orElseThrow로 예외 던지기
+    public ResponseData<String> updatePost(PostForm form, Long postId) throws IOException {
+        Post post = postRepository.findById(postId)
+                .map(p -> p.updateForm(form)) // Optional에 값이 있으면 연산 수행
+                .orElseThrow(() -> new PostNotExsistException("게시글이 존재하지 않습니다."));
         if (!form.getImageFiles().isEmpty()) {
             List<UploadFile> storeImageFiles = fileStoreUtil.storeFiles(form.getImageFiles());
             storeImageFiles.forEach(f -> fileRepository.save(new File(f, post)));
