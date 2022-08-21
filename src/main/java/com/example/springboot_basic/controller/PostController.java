@@ -13,7 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -61,8 +65,11 @@ public class PostController {
 
     // 게시글 상세조회 페이지
     @GetMapping("/posts/{postId}")
-    public String postInfo(@PathVariable("postId") Long postId, Model model) {
-        PostInfoResponse postInfo = postService.findPost(postId);
+    public String postInfo(@PathVariable("postId") Long postId,
+                           HttpServletRequest request,
+                           HttpServletResponse response,
+                           Model model) {
+        PostInfoResponse postInfo = postService.findPost(postId, request, response);
         model.addAttribute("post", postInfo);
         return "post/post-info";
     }

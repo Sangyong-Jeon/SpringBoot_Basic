@@ -22,9 +22,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,10 +75,10 @@ public class PostService {
         return postsDto;
     }
 
-    public PostInfoResponse findPost(Long postId) {
+    public PostInfoResponse findPost(Long postId, HttpServletRequest request, HttpServletResponse response) {
         Post post = postRepository.findById(postId)
-                .map(Post::addViewCount)
                 .orElseThrow(() -> new PostNotExistException("게시글이 존재하지 않습니다."));
+        viewCountValidation(post, request, response);
         List<FilesResponse> storeImageNames = fileRepository.findByPost(post).stream()
                 .map(FilesResponse::new)
                 .collect(Collectors.toList());
@@ -90,6 +98,28 @@ public class PostService {
                 .build();
     }
 
+    private void viewCountValidation(Post post, HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = Arrays.stream(request.getCookies())
+                .filter(c -> c.getName().equals("postView")) // postView 쿠키가 있는지 필터링함
+                .findFirst()// filter조건에 일치하는 가장 앞에 있는 요소 1개를 Optional로 리턴함. 없으면 empty 리턴
+                .map(c -> { // Optional에 Cookie가 있으면 꺼내서 수행
+                    if (!c.getValue().contains("[" + post.getId() + "]")) {
+                        post.addViewCount();
+                        c.setValue(c.getValue() + "[" + post.getId() + "]");
+                    }
+                    return c;
+                })
+                .orElseGet(() -> { // Optional에 Cookie가 없으면 수행
+                    post.addViewCount();
+                    return new Cookie("postView", "[" + post.getId() + "]");
+                });
+        long todayEndSecond = LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
+        long currentSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        cookie.setPath("/"); // 모든 경로에서 접근 가능
+        cookie.setMaxAge((int) (todayEndSecond - currentSecond)); // 오늘 하루 자정까지 남은 시간초 설정
+        response.addCookie(cookie);
+    }
+
     public PostEditResponse findUpdatePost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
         Post post = findPost.orElse(null);
@@ -99,7 +129,6 @@ public class PostService {
         return new PostEditResponse(post.getId(), post.getTitle(), post.getContent(), storeImageNames);
     }
 
-    // orElse는 값이 있든 없든 무조건 실행, orElseGet은 값이 없을때만 실행, orElseThrow로 예외 던지기
     public ResponseData<String> updatePost(PostForm form, Long postId) throws IOException {
         Post post = postRepository.findById(postId)
                 .map(p -> p.updateForm(form)) // Optional에 값이 있으면 연산 수행

@@ -35,7 +35,6 @@ public class PostApiController {
         return responseUtil.createResponseEntity(responseData, new HttpHeaders());
     }
 
-    // 게시글 삭제
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ResponseData<?>> deletePost(@PathVariable("postId") Long postId) {
         ResponseData<String> responseData = postService.deletePost(postId);
