@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
-                .mvcMatchers("/", "/members/new").permitAll()
+                .mvcMatchers("/", "/members/new", "/favicon.ico", "/resources/**", "/error").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/api/comment").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/posts", "/posts/*", "/api/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "MANAGER", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
@@ -34,13 +34,13 @@ public class SecurityConfig {
                 .build();
     }
 
-    // 인증하지 않을 주소 추가, static 폴더에서 설정
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .mvcMatchers("/css/**", "/js/**", "/image/**")
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
+//    // 인증하지 않을 주소 추가, static 폴더에서 설정
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring()
+//                .mvcMatchers("/css/**", "/js/**", "/image/**")
+//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+//    }
 
 
 }
