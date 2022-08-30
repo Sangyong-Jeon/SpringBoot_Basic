@@ -2,6 +2,7 @@ package com.example.springboot_basic.controller;
 
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
+import com.example.springboot_basic.exception.CommentNotExistException;
 import com.example.springboot_basic.exception.PostNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,13 @@ public class ExceptionController {
 
     @ExceptionHandler(PostNotExistException.class)
     public ResponseEntity<ResponseData<String>> postNotValidExceptionHandler(PostNotExistException e) {
+        Header header = Header.notFound(e.getMessage());
+        ResponseData<String> responseData = new ResponseData<>(header, "");
+        return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CommentNotExistException.class)
+    public ResponseEntity<ResponseData<String>> commentNotValidExceptionHandler(CommentNotExistException e) {
         Header header = Header.notFound(e.getMessage());
         ResponseData<String> responseData = new ResponseData<>(header, "");
         return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
