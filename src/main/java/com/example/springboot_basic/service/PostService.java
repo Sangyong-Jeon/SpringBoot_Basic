@@ -143,21 +143,17 @@ public class PostService {
     public ResponseData<String> deletePost(Long postId) {
         PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Member member = principalDetails.getMember();
-        Optional<Post> findPost = postRepository.findById(postId);
-        Post post = findPost.orElse(null);
-        if (post == null) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotExistException("게시글이 존재하지 않습니다."));
         if (!member.getLoginId().equals(post.getMember().getLoginId()))
             return new ResponseData<>(Header.badRequest("등록한 회원이 아닙니다."), "");
         // 파일 삭제
-        List<File> files = fileRepository.findByPost(post);
-        if (files.size() > 0) {
-            files.forEach(file -> {
-                String fullPath = fileStoreUtil.getFullPath(file.getStoreFileName());
-                java.io.File imageFile = new java.io.File(fullPath);
-                if (imageFile.exists()) imageFile.delete();
-                fileRepository.delete(file);
-            });
-        }
+        fileRepository.findByPost(post).forEach(file -> {
+            String fullPath = fileStoreUtil.getFullPath(file.getStoreFileName());
+            java.io.File imageFile = new java.io.File(fullPath);
+            if (imageFile.exists()) imageFile.delete();
+            fileRepository.delete(file);
+        });
         // 댓글 삭제
         List<Comment> comments = commentRepository.findCommentsForPost(post);
         List<Comment> childs = new ArrayList<>();
