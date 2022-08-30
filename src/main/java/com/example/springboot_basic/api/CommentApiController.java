@@ -7,6 +7,7 @@ import com.example.springboot_basic.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,14 @@ public class CommentApiController {
     public ResponseEntity<ResponseData<?>> addComment(@Valid @RequestBody CommentForm commentForm) {
         System.out.println("commentForm = " + commentForm);
         ResponseData<String> responseData = commentService.addComment(commentForm);
+        return responseUtil.createResponseEntity(responseData, new HttpHeaders());
+    }
+
+    // 댓글 수정
+    @PatchMapping("/comment")
+    public ResponseEntity<ResponseData<?>> updateComment(@Valid @RequestBody CommentForm commentForm) {
+        System.out.println("commentForm = " + commentForm);
+        ResponseData<String> responseData = commentService.updateComment(commentForm);
         return responseUtil.createResponseEntity(responseData, new HttpHeaders());
     }
 }

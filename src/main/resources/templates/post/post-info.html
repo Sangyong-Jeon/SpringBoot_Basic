@@ -38,7 +38,9 @@
     <div class="py-2 row justify-content-end">
         <div class="col-auto">
             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="backPage()">돌아가기</button>
-            <button class="btn btn-outline-primary btn-sm" onclick="validatePost()" sec:authorize="isAuthenticated()">수정</button>
+            <button class="btn btn-outline-primary btn-sm" onclick="validatePost()" sec:authorize="isAuthenticated()">
+                수정
+            </button>
             <button class="btn btn-outline-danger btn-sm" onclick="deletePost()" sec:authorize="isAuthenticated()">삭제
             </button>
         </div>
@@ -60,13 +62,18 @@
             <div class="py-3" th:id="|c${comment.id}|">
                 <div class="d-flex justify-content-between">
                     <strong th:if="${comment.createdBy.equals('anonymousUser')}">익명</strong>
-                    <strong th:unless="${comment.createdBy.equals('anonymousUser')}" th:text="${comment.createdBy}"></strong>
+                    <strong th:unless="${comment.createdBy.equals('anonymousUser')}"
+                            th:text="${comment.createdBy}"></strong>
                     <div sec:authorize="isAnonymous()" th:if="${comment.createdBy.equals('anonymousUser')}">
-                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}" onclick="updateComment(this)">수정</button>
+                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}"
+                                onclick="updateCommentView(this)">수정
+                        </button>
                         <button class="btn btn-outline-danger btn-sm">삭제</button>
                     </div>
                     <div sec:authorize="isAuthenticated()" th:unless="${comment.createdBy.equals('anonymousUser')}">
-                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}" onclick="updateComment(this)">수정</button>
+                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}"
+                                onclick="updateCommentView(this)">수정
+                        </button>
                         <button class="btn btn-outline-danger btn-sm">삭제</button>
                     </div>
                 </div>
@@ -79,17 +86,31 @@
             <div class="py-3" th:id="|uc${comment.id}|" style="display:none">
                 <div class="d-flex justify-content-between">
                     <strong th:if="${comment.createdBy.equals('anonymousUser')}">익명</strong>
-                    <strong th:unless="${comment.createdBy.equals('anonymousUser')}" th:text="${comment.createdBy}"></strong>
+                    <strong th:unless="${comment.createdBy.equals('anonymousUser')}"
+                            th:text="${comment.createdBy}"></strong>
                     <div sec:authorize="isAnonymous()" th:if="${comment.createdBy.equals('anonymousUser')}">
-                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}" onclick="updateComment(this)">완료</button>
-                        <button class="btn btn-outline-danger btn-sm" th:data-commentid="${comment.id}" onclick="updateCommentCancle(this)">취소</button>
+                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}"
+                                onclick="updateComment(this)">완료
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" th:data-commentid="${comment.id}"
+                                onclick="updateCommentCancle(this)">취소
+                        </button>
                     </div>
                     <div sec:authorize="isAuthenticated()" th:unless="${comment.createdBy.equals('anonymousUser')}">
-                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}" onclick="updateComment(this)">완료</button>
-                        <button class="btn btn-outline-danger btn-sm" th:data-commentid="${comment.id}" onclick="updateCommentCancle(this)">취소</button>
+                        <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}"
+                                onclick="updateComment(this)">완료
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" th:data-commentid="${comment.id}"
+                                onclick="updateCommentCancle(this)">취소
+                        </button>
                     </div>
                 </div>
-                <textarea class="autosize" th:text="${comment.content}" style="width:80%"></textarea><br>
+                <textarea th:id="|update_comment${comment.id}|" class="autosize" th:text="${comment.content}"
+                          style="width:80%"></textarea><br>
+                <div class="py-2" sec:authorize="isAnonymous()">
+                    <label th:for="|update_comment_pw${comment.id}|">비밀번호</label>
+                    <input type="password" th:id="|update_comment_pw${comment.id}|">
+                </div>
                 <small class="text-muted" th:text="${comment.createdDate}"></small>
                 <br>
                 <button class="btn btn-sm btn-outline-secondary">답글</button>
@@ -101,7 +122,8 @@
                     <div class="py-2 border-bottom" th:each="child : ${comment.childComments}">
                         <div class="d-flex justify-content-between">
                             <strong th:if="${child.createdBy.equals('anonymousUser')}">익명</strong>
-                            <strong th:unless="${child.createdBy.equals('anonymousUser')}" th:text="${child.createdBy}"></strong>
+                            <strong th:unless="${child.createdBy.equals('anonymousUser')}"
+                                    th:text="${child.createdBy}"></strong>
                             <div sec:authorize="isAnonymous()" th:if="${child.createdBy.equals('anonymousUser')}">
                                 <button class="btn btn-outline-primary btn-sm">수정</button>
                                 <button class="btn btn-outline-danger btn-sm">삭제</button>
@@ -117,12 +139,15 @@
                     </div>
                     <!-- 대댓글 등록 입력칸 -->
                     <div class="py-2">
-                        <textarea th:id="|child_comment${comment.id}|" placeholder="댓글을 입력하세요" style="width: 100%" rows="3"></textarea>
+                        <textarea th:id="|child_comment${comment.id}|" placeholder="댓글을 입력하세요" style="width: 100%"
+                                  rows="3"></textarea>
                         <div class="py-2" sec:authorize="isAnonymous()">
                             <label th:for="|child_password${comment.id}|">비밀번호</label>
                             <input type="password" th:id="|child_password${comment.id}|">
                         </div>
-                        <button th:id="${comment.id}" class="btn btn-secondary btn-sm" onclick="addChildComment(this.id)">댓글 등록</button>
+                        <button th:id="${comment.id}" class="btn btn-secondary btn-sm"
+                                onclick="addChildComment(this.id)">댓글 등록
+                        </button>
                     </div>
                 </div>
             </div>
@@ -131,6 +156,11 @@
 </div>
 </body>
 <script th:inline="javascript">
+
+    // textarea 높이 자동 조절
+    $("textarea.autosize").on('keydown keyup', function () {
+        $(this).height(1).height($(this).prop('scrollHeight') + 12);
+    });
 
     /*<![CDATA[*/
     var postId = [[${post.id}]];
@@ -190,8 +220,9 @@
         };
 
         if (!validateStr('content', commentForm.content)) return
-        if (commentForm.password !== undefined)
+        if (commentForm.password !== undefined) {
             if (!validateStr('password', commentForm.password)) return
+        }
 
         $.ajax({
             method: "POST",
@@ -204,6 +235,33 @@
             },
             error: (err) => {
                 console.log(err);
+            }
+        })
+    }
+
+    const updateComment = (e) => {
+        const commentId = e.dataset.commentid;
+        const commentForm = {
+            content: $("#update_comment" + commentId).val(),
+            password: $("#update_comment_pw" + commentId).val(),
+            commentId: commentId,
+        };
+
+        if (!validateStr('content', commentForm.content)) return
+        if (commentForm.password !== undefined) {
+            if (!validateStr('password', commentForm.password)) return
+        }
+
+        $.ajax({
+            method: "PATCH",
+            url: "/api/comment",
+            data: JSON.stringify(commentForm),
+            contentType: 'application/json',
+            success: (res) => {
+                window.location.reload();
+            },
+            error: (err) => {
+                alert(err.responseJSON.header.message);
             }
         })
     }
@@ -235,7 +293,7 @@
         })
     }
 
-    const updateComment = (e) => {
+    const updateCommentView = (e) => {
         console.log(e.dataset.commentid);
         const commentId = e.dataset.commentid;
         // 댓글 숨기기
@@ -252,9 +310,6 @@
         $('#c' + commentId).show();
     }
 
-    // textarea 높이 자동 조절
-    $("textarea.autosize").on('keydown keyup', function () {
-        $(this).height(1).height($(this).prop('scrollHeight') + 12);
-    });
+
 </script>
 </html>

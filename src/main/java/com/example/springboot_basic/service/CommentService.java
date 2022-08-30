@@ -6,6 +6,8 @@ import com.example.springboot_basic.domain.post.Post;
 import com.example.springboot_basic.dto.comment.CommentForm;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
+import com.example.springboot_basic.exception.CommentNotExistException;
+import com.example.springboot_basic.exception.PostNotExistException;
 import com.example.springboot_basic.repository.CommentRepository;
 import com.example.springboot_basic.repository.MemberRepository;
 import com.example.springboot_basic.repository.PostRepository;
@@ -15,10 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentService {
 
@@ -30,8 +32,8 @@ public class CommentService {
     // 댓글 등록
     public ResponseData<String> addComment(CommentForm commentForm) {
         // 1. 게시글이 있는가?
-        Optional<Post> findPost = postRepository.findById(commentForm.getPostId());
-        if (!findPost.isPresent()) return new ResponseData<>(Header.badRequest("게시글이 존재하지 않습니다."), "");
+        Post post = postRepository.findById(commentForm.getPostId())
+                .orElseThrow(() -> new PostNotExistException("게시글이 존재하지 않습니다."));
         // 2. 회원이 있는가?
         Member member = null;
         String password = null;
@@ -44,19 +46,37 @@ public class CommentService {
         }
         // 3. 대댓글인가?
         Comment parent = null;
-        if (!commentForm.isEmpty("parentId")) {
-            Optional<Comment> findParent = commentRepository.findById(commentForm.getParentId());
-            parent = findParent.orElse(null);
-        }
+        if (!commentForm.isEmpty("parentId"))
+            parent = commentRepository.findById(commentForm.getParentId()).orElseGet(null);
         // 5. 댓글 생성
         Comment comment = Comment.builder()
                 .content(commentForm.getContent())
                 .password(password)
                 .parent(parent)
                 .member(member)
-                .post(findPost.get())
+                .post(post)
                 .build();
         commentRepository.save(comment);
         return new ResponseData<>(Header.ok("댓글이 등록되었습니다."), "");
+    }
+
+    // 댓글 수정
+    public ResponseData<String> updateComment(CommentForm commentForm) {
+        // 1. 댓글 여부 확인
+        Comment comment = commentRepository.findById(commentForm.getCommentId())
+                .orElseThrow(() -> new CommentNotExistException("댓글이 존재하지 않습니다."));
+        // 2. 회원이면 등록한 회원이 맞는지 or 비회원이면 비밀번호가 동일한지 확인
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.getName().equals("anonymousUser")) {
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            if (!comment.getMember().getLoginId().equals(principalDetails.getUsername()))
+                return new ResponseData<>(Header.badRequest("댓글을 등록한 회원이 아닙니다."), "");
+        } else {
+            if (!bCryptPasswordEncoder.matches(commentForm.getPassword(), comment.getPassword()))
+                return new ResponseData<>(Header.badRequest("댓글을 등록한 사용자가 아닙니다."), "");
+        }
+        // 3. 댓글 수정
+        comment.updateContent(commentForm.getContent());
+        return new ResponseData<>(Header.ok("댓글이 수정되었습니다."), "");
     }
 }
