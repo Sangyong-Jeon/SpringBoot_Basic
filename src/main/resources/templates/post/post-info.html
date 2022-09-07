@@ -120,21 +120,57 @@
                 <div class="ml-5">
                     <!-- 대댓글 리스트 표시 -->
                     <div class="py-2 border-bottom" th:each="child : ${comment.childComments}">
-                        <div class="d-flex justify-content-between">
-                            <strong th:if="${child.createdBy.equals('anonymousUser')}">익명</strong>
-                            <strong th:unless="${child.createdBy.equals('anonymousUser')}"
-                                    th:text="${child.createdBy}"></strong>
-                            <div sec:authorize="isAnonymous()" th:if="${child.createdBy.equals('anonymousUser')}">
-                                <button class="btn btn-outline-primary btn-sm">수정</button>
-                                <button class="btn btn-outline-danger btn-sm">삭제</button>
+                        <!-- 대댓글 표시 -->
+                        <div th:id="|ch${child.id}|">
+                            <div class="d-flex justify-content-between">
+                                <strong th:if="${child.createdBy.equals('anonymousUser')}">익명</strong>
+                                <strong th:unless="${child.createdBy.equals('anonymousUser')}"
+                                        th:text="${child.createdBy}"></strong>
+                                <div sec:authorize="isAnonymous()" th:if="${child.createdBy.equals('anonymousUser')}">
+                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}"
+                                            onclick="updateChildCommentView(this)">수정
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm">삭제</button>
+                                </div>
+                                <div sec:authorize="isAuthenticated()"
+                                     th:unless="${child.createdBy.equals('anonymousUser')}">
+                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}"
+                                            onclick="updateChildCommentView(this)">수정
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm">삭제</button>
+                                </div>
                             </div>
-                            <div sec:authorize="isAuthenticated()"
-                                 th:unless="${child.createdBy.equals('anonymousUser')}">
-                                <button class="btn btn-outline-primary btn-sm">수정</button>
-                                <button class="btn btn-outline-danger btn-sm">삭제</button>
+                            <div th:text="${child.content}"></div>
+                        </div>
+                        <!-- 대댓글 수정칸 표시 -->
+                        <div th:id="|uch${child.id}|" style="display:none">
+                            <div class="d-flex justify-content-between">
+                                <strong th:if="${child.createdBy.equals('anonymousUser')}">익명</strong>
+                                <strong th:unless="${child.createdBy.equals('anonymousUser')}"
+                                        th:text="${child.createdBy}"></strong>
+                                <div sec:authorize="isAnonymous()" th:if="${child.createdBy.equals('anonymousUser')}">
+                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}">완료
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" th:data-childid="${child.id}"
+                                            onclick="updateChildCommentCancle(this)">취소
+                                    </button>
+                                </div>
+                                <div sec:authorize="isAuthenticated()"
+                                     th:unless="${child.createdBy.equals('anonymousUser')}">
+                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}">완료
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" th:data-childid="${child.id}"
+                                            onclick="updateChildCommentCancle(this)">취소
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea th:id="|update_child${child.id}|" class="autosize" th:text="${child.content}"
+                                      style="width:80%"></textarea><br>
+                            <div class="py-2" sec:authorize="isAnonymous()">
+                                <label th:for="|uch_pw${child.id}|">비밀번호</label>
+                                <input type="password" th:id="|uch_pw${child.id}|">
                             </div>
                         </div>
-                        <div th:text="${child.content}"></div>
                         <small class="text-muted" th:text="${child.createdDate}"></small>
                     </div>
                     <!-- 대댓글 등록 입력칸 -->
@@ -156,21 +192,22 @@
 </div>
 </body>
 <script th:inline="javascript">
+    // 현재 게시글 번호
+    /*<![CDATA[*/
+    const postId = [[${post.id}]];
+    /*]]>*/
 
     // textarea 높이 자동 조절
     $("textarea.autosize").on('keydown keyup', function () {
         $(this).height(1).height($(this).prop('scrollHeight') + 12);
     });
 
-    /*<![CDATA[*/
-    var postId = [[${post.id}]];
-    console.log(postId);
-    /*]]>*/
-
+    // 게시글 리스트 페이지 이동
     const backPage = () => {
         location.href = "http://localhost:8081/posts"
     }
 
+    // 게시글 삭제
     const deletePost = () => {
         $.ajax({
             type: "DELETE",
@@ -188,6 +225,7 @@
         })
     }
 
+    // 본인 게시글 확인 후 게시글 수정페이지로 이동
     const validatePost = () => {
         $.ajax({
             method: "GET",
@@ -203,6 +241,7 @@
         })
     }
 
+    // 댓글 및 대댓글 작성 시 올바르게 작성했는지 검증
     const validateStr = (type, str) => {
         if (!str.length > 0 || str === "" || str === " ") {
             if (type === 'content') alert("댓글을 올바르게 입력해주세요");
@@ -212,6 +251,7 @@
         return true;
     }
 
+    // 댓글 등록
     const addComment = () => {
         const commentForm = {
             content: $("#comment").val(),
@@ -239,6 +279,7 @@
         })
     }
 
+    // 댓글 수정
     const updateComment = (e) => {
         const commentId = e.dataset.commentid;
         const commentForm = {
@@ -266,6 +307,7 @@
         })
     }
 
+    // 대댓글 등록
     const addChildComment = (parentId) => {
         const commentForm = {
             content: $("#child_comment" + parentId).val(),
@@ -293,8 +335,8 @@
         })
     }
 
+    // 댓글표시칸 숨기고 댓글수정칸 보이기
     const updateCommentView = (e) => {
-        console.log(e.dataset.commentid);
         const commentId = e.dataset.commentid;
         // 댓글 숨기기
         $('#c' + commentId).hide();
@@ -302,6 +344,7 @@
         $('#uc' + commentId).show();
     }
 
+    // 댓글수정칸 숨기고 댓글표시칸 보이기
     const updateCommentCancle = (e) => {
         const commentId = e.dataset.commentid;
         // 댓글 수정칸 숨기기
@@ -311,5 +354,23 @@
     }
 
 
+
+    // 대댓글표시칸 숨기고 대댓글수정칸 보이기
+    const updateChildCommentView = (e) => {
+        const childId = e.dataset.childid;
+        // 대댓글 숨기기
+        $('#ch' + childId).hide();
+        // 대댓글 수정칸 표시
+        $('#uch' + childId).show();
+    }
+
+    // 대댓글수정칸 숨기고 대댓글표시칸 보이기
+    const updateChildCommentCancle = (e) => {
+        const childId = e.dataset.childid;
+        // 대댓글 수정칸 숨기기
+        $('#uch' + childId).hide();
+        // 대댓글 표시
+        $('#ch' + childId).show();
+    }
 </script>
 </html>
