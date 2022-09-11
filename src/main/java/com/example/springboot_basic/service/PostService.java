@@ -105,20 +105,24 @@ public class PostService {
     }
 
     private void viewCountValidation(Post post, HttpServletRequest request, HttpServletResponse response) {
-        Cookie cookie = Arrays.stream(request.getCookies())
-                .filter(c -> c.getName().equals("postView")) // postView 쿠키가 있는지 필터링함
-                .findFirst()// filter조건에 일치하는 가장 앞에 있는 요소 1개를 Optional로 리턴함. 없으면 empty 리턴
-                .map(c -> { // Optional에 Cookie가 있으면 꺼내서 수행
-                    if (!c.getValue().contains("[" + post.getId() + "]")) {
-                        post.addViewCount();
-                        c.setValue(c.getValue() + "[" + post.getId() + "]");
-                    }
-                    return c;
-                })
-                .orElseGet(() -> { // Optional에 Cookie가 없으면 수행
+        Cookie[] cookies = request.getCookies();
+        Cookie cookie = null;
+        boolean isCookie = false;
+        for (int i = 0; cookies != null && i < cookies.length; i++) { // request에 쿠키들이 있을 때
+            if (cookies[i].getName().equals("postView")) { // postView 쿠키가 있을 때
+                cookie = cookies[i];
+                if (!cookie.getValue().contains("[" + post.getId() + "]")) {
                     post.addViewCount();
-                    return new Cookie("postView", "[" + post.getId() + "]");
-                });
+                    cookie.setValue(cookie.getValue() + "[" + post.getId() + "]");
+                }
+                isCookie = true;
+                break;
+            }
+        }
+        if (!isCookie) { // postView 쿠키가 없을 때
+            post.addViewCount();
+            cookie = new Cookie("postView", "[" + post.getId() + "]"); // oldCookie에 새 쿠키 생성
+        }
         long todayEndSecond = LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
         long currentSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         cookie.setPath("/"); // 모든 경로에서 접근 가능
