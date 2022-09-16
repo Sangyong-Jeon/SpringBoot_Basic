@@ -21,13 +21,13 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEM_SEQ_GENERATOR") // 자동생성 시퀀스 적용
     private Long id;
 
-    @Column(name = "ID", length = 20, unique = true, nullable = true) // 컬럼명 "ID", VARCHAR2(20), UNIQUE, NOT NULL
+    @Column(name = "ID", length = 100, unique = true, nullable = false) // 컬럼명 "ID", VARCHAR2(100), UNIQUE, NOT NULL
     private String loginId;
 
-    @Column(name = "PW", length = 200, nullable = false)
+    @Column(name = "PW", nullable = false) // 컬럼명 "PW", VARCHAR2(255), NOT NULL
     private String password;
 
-    @Column(name = "NAME", length = 25, nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
