@@ -149,7 +149,8 @@
                                 <strong th:unless="${child.createdBy.equals('anonymousUser')}"
                                         th:text="${child.createdBy}"></strong>
                                 <div sec:authorize="isAnonymous()" th:if="${child.createdBy.equals('anonymousUser')}">
-                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}">완료
+                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}"
+                                            onclick="updateChildComment(this)">완료
                                     </button>
                                     <button class="btn btn-outline-danger btn-sm" th:data-childid="${child.id}"
                                             onclick="updateChildCommentCancle(this)">취소
@@ -157,7 +158,8 @@
                                 </div>
                                 <div sec:authorize="isAuthenticated()"
                                      th:unless="${child.createdBy.equals('anonymousUser')}">
-                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}">완료
+                                    <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}"
+                                            onclick="updateChildComment(this)">완료
                                     </button>
                                     <button class="btn btn-outline-danger btn-sm" th:data-childid="${child.id}"
                                             onclick="updateChildCommentCancle(this)">취소
@@ -167,8 +169,8 @@
                             <textarea th:id="|update_child${child.id}|" class="autosize" th:text="${child.content}"
                                       style="width:80%"></textarea><br>
                             <div class="py-2" sec:authorize="isAnonymous()">
-                                <label th:for="|uch_pw${child.id}|">비밀번호</label>
-                                <input type="password" th:id="|uch_pw${child.id}|">
+                                <label th:for="|update_child_pw${child.id}|">비밀번호</label>
+                                <input type="password" th:id="|update_child_pw${child.id}|">
                             </div>
                         </div>
                         <small class="text-muted" th:text="${child.createdDate}"></small>
@@ -266,7 +268,7 @@
 
         $.ajax({
             method: "POST",
-            url: "/api/comment",
+            url: "/api/comments",
             data: JSON.stringify(commentForm),
             contentType: 'application/json',
             success: (res) => {
@@ -295,8 +297,35 @@
 
         $.ajax({
             method: "PATCH",
-            url: "/api/comment",
+            url: "/api/comments",
             data: JSON.stringify(commentForm),
+            contentType: 'application/json',
+            success: (res) => {
+                window.location.reload();
+            },
+            error: (err) => {
+                alert(err.responseJSON.header.message);
+            }
+        })
+    }
+
+    // 대댓글 수정
+    const updateChildComment = (e) => {
+        const childId = e.dataset.childid;
+        const childForm = {
+            content: $("#update_child" + childId).val(),
+            password: $("#update_child_pw" + childId).val(),
+            childId: childId,
+        };
+
+        if (!validateStr('content', childForm.content)) return
+        if (childForm.password !== undefined)
+            if (!validateStr('password', childForm.password)) return
+
+        $.ajax({
+            method: "PATCH",
+            url: "/api/childs",
+            data: JSON.stringify(childForm),
             contentType: 'application/json',
             success: (res) => {
                 window.location.reload();
@@ -322,7 +351,7 @@
 
         $.ajax({
             method: "POST",
-            url: '/api/comment',
+            url: '/api/comments',
             data: JSON.stringify(commentForm),
             contentType: 'application/json',
             success: (res) => {
@@ -352,7 +381,6 @@
         // 댓글 표시
         $('#c' + commentId).show();
     }
-
 
 
     // 대댓글표시칸 숨기고 대댓글수정칸 보이기

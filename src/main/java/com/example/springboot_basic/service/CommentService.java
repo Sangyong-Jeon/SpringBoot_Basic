@@ -3,6 +3,7 @@ package com.example.springboot_basic.service;
 import com.example.springboot_basic.domain.comment.Comment;
 import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.domain.post.Post;
+import com.example.springboot_basic.dto.comment.ChildCommentForm;
 import com.example.springboot_basic.dto.comment.CommentForm;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
@@ -46,8 +47,9 @@ public class CommentService {
         }
         // 3. 대댓글인가?
         Comment parent = null;
-        if (!commentForm.isEmpty("parentId"))
-            parent = commentRepository.findById(commentForm.getParentId()).orElseGet(null);
+        if (!commentForm.isParentIdEmpty())
+            parent = commentRepository.findById(commentForm.getParentId())
+                    .orElseThrow(() -> new CommentNotExistException("댓글이 존재하지 않습니다."));
         // 5. 댓글 생성
         Comment comment = Comment.builder()
                 .content(commentForm.getContent())
@@ -78,5 +80,24 @@ public class CommentService {
         // 3. 댓글 수정
         comment.updateContent(commentForm.getContent());
         return new ResponseData<>(Header.ok("댓글이 수정되었습니다."), "");
+    }
+
+    // 대댓글 수정
+    public ResponseData<String> updateChildComment(ChildCommentForm childForm) {
+        // 1. 대댓글 여부 확인
+        Comment childComment = commentRepository.findById(childForm.getChildId())
+                .orElseThrow(() -> new CommentNotExistException("대댓글이 존재하지 않습니다."));
+        // 2. 회원이면 등록한 회원이 맞는지 or 비회원이면 비밀번호가 동일한지 확인
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.getName().equals("anonymousUser")) {
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            if (!childComment.getMember().getLoginId().equals(principalDetails.getUsername()))
+                return new ResponseData<>(Header.badRequest("대댓글을 등록한 회원이 아닙니다."), "");
+        } else {
+            if (!bCryptPasswordEncoder.matches(childForm.getPassword(), childComment.getPassword()))
+                return new ResponseData<>(Header.badRequest("대댓글을 등록한 사용자가 아닙니다."), "");
+        }
+        childComment.updateContent(childForm.getContent());
+        return new ResponseData<>(Header.ok("대댓글이 수정되었습니다."), "");
     }
 }

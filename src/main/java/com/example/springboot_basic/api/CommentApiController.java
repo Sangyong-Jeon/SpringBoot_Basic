@@ -1,5 +1,6 @@
 package com.example.springboot_basic.api;
 
+import com.example.springboot_basic.dto.comment.ChildCommentForm;
 import com.example.springboot_basic.dto.comment.CommentForm;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.service.CommentService;
@@ -23,19 +24,24 @@ public class CommentApiController {
     private final ResponseUtil responseUtil;
     private final CommentService commentService;
 
-    // 댓글 등록
-    @PostMapping("/comment")
+    // 댓글 및 대댓글 등록
+    @PostMapping("/comments")
     public ResponseEntity<ResponseData<?>> addComment(@Valid @RequestBody CommentForm commentForm) {
-        System.out.println("commentForm = " + commentForm);
         ResponseData<String> responseData = commentService.addComment(commentForm);
         return responseUtil.createResponseEntity(responseData, new HttpHeaders());
     }
 
     // 댓글 수정
-    @PatchMapping("/comment")
+    @PatchMapping("/comments")
     public ResponseEntity<ResponseData<?>> updateComment(@Valid @RequestBody CommentForm commentForm) {
-        System.out.println("commentForm = " + commentForm);
         ResponseData<String> responseData = commentService.updateComment(commentForm);
+        return responseUtil.createResponseEntity(responseData, new HttpHeaders());
+    }
+
+    // 대댓글 수정
+    @PatchMapping("/childs")
+    public ResponseEntity<ResponseData<?>> updateChildComment(@Valid @RequestBody ChildCommentForm childForm) {
+        ResponseData<String> responseData = commentService.updateChildComment(childForm);
         return responseUtil.createResponseEntity(responseData, new HttpHeaders());
     }
 }

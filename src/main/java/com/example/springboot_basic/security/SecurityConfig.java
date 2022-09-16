@@ -20,8 +20,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests()
                 .mvcMatchers("/", "/members/new", "/favicon.ico", "/error", "/css/**", "/js/**", "/image/**").permitAll()
-                .mvcMatchers(HttpMethod.PATCH, "/api/comment").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/api/comment").permitAll()
+                .mvcMatchers(HttpMethod.PATCH, "/api/comments", "/api/childs").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/api/comments").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/posts", "/posts/*", "/api/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "MANAGER", "USER") // hasAnyRole과 hasRole 함수는 자동으로 "ROLE_"이 붙음.
 //                .mvcMatchers("/members").hasAnyRole("ADMIN", "USER")
