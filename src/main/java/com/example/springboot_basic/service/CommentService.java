@@ -5,6 +5,7 @@ import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.domain.post.Post;
 import com.example.springboot_basic.dto.comment.ChildCommentForm;
 import com.example.springboot_basic.dto.comment.CommentForm;
+import com.example.springboot_basic.dto.comment.DeleteCommentForm;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.exception.CommentNotExistException;
@@ -99,5 +100,28 @@ public class CommentService {
         }
         childComment.updateContent(childForm.getContent());
         return new ResponseData<>(Header.ok("대댓글이 수정되었습니다."), "");
+    }
+
+    public ResponseData<String> deleteComment(DeleteCommentForm deleteCommentForm) {
+        // 1. 댓글 여부 확인
+        Comment comment = commentRepository.findById(deleteCommentForm.getCommentId())
+                .orElseThrow(() -> new CommentNotExistException("댓글이 존재하지 않습니다."));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 2-1. 회원일 때 검증
+        if (!authentication.getName().equals("anonymousUser")) {
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            if (!comment.getMember().getLoginId().equals(principalDetails.getUsername()))
+                return new ResponseData<>(Header.badRequest("댓글을 등록한 회원이 아닙니다."), "");
+        }
+        // 2-2. 비회원일 때 검증
+        else {
+            if (!bCryptPasswordEncoder.matches(deleteCommentForm.getPassword(), comment.getPassword()))
+                return new ResponseData<>(Header.badRequest("댓글을 등록한 사용자가 아닙니다."), "");
+        }
+        // 대댓글 있으면 삭제
+        if (comment.getChild().size() > 0)
+            commentRepository.deleteAllInBatch(comment.getChild());
+        commentRepository.delete(comment);
+        return new ResponseData<>(Header.ok("게시글이 삭제되었습니다."), "");
     }
 }

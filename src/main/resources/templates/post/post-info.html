@@ -68,13 +68,16 @@
                         <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}"
                                 onclick="updateCommentView(this)">수정
                         </button>
-                        <button class="btn btn-outline-danger btn-sm">삭제</button>
+                        <button class="btn btn-outline-danger btn-sm" th:data-commentid="${comment.id}"
+                                onclick="deleteComment(this)">삭제
                     </div>
                     <div sec:authorize="isAuthenticated()" th:unless="${comment.createdBy.equals('anonymousUser')}">
                         <button class="btn btn-outline-primary btn-sm" th:data-commentid="${comment.id}"
                                 onclick="updateCommentView(this)">수정
                         </button>
-                        <button class="btn btn-outline-danger btn-sm">삭제</button>
+                        <button class="btn btn-outline-danger btn-sm" th:data-commentid="${comment.id}"
+                                onclick="deleteComment(this)">삭제
+                        </button>
                     </div>
                 </div>
                 <div th:text="${comment.content}"></div>
@@ -130,14 +133,16 @@
                                     <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}"
                                             onclick="updateChildCommentView(this)">수정
                                     </button>
-                                    <button class="btn btn-outline-danger btn-sm">삭제</button>
+                                    <button class="btn btn-outline-danger btn-sm" th:data-commentid="${child.id}"
+                                            onclick="deleteComment(this)">삭제
                                 </div>
                                 <div sec:authorize="isAuthenticated()"
                                      th:unless="${child.createdBy.equals('anonymousUser')}">
                                     <button class="btn btn-outline-primary btn-sm" th:data-childid="${child.id}"
                                             onclick="updateChildCommentView(this)">수정
                                     </button>
-                                    <button class="btn btn-outline-danger btn-sm">삭제</button>
+                                    <button class="btn btn-outline-danger btn-sm" th:data-commentid="${child.id}"
+                                            onclick="deleteComment(this)">삭제
                                 </div>
                             </div>
                             <div th:text="${child.content}"></div>
@@ -360,6 +365,28 @@
             },
             error: (err) => {
                 console.log(err);
+            }
+        })
+    }
+    // 댓글 및 대댓글 삭제
+    const deleteComment = (e) => {
+        const password = prompt("비밀번호를 입력하세요");
+        if (password === undefined || !validateStr('password', password)) return
+        const deleteCommentForm = {
+            commentId: e.dataset.commentid,
+            password: password,
+        };
+        $.ajax({
+            method: "DELETE",
+            url: '/api/comments',
+            data: JSON.stringify(deleteCommentForm),
+            contentType: 'application/json',
+            success: (res) => {
+                alert(res.header.message);
+                location.reload();
+            },
+            error: (err) => {
+                alert(err.responseJSON.header.message);
             }
         })
     }

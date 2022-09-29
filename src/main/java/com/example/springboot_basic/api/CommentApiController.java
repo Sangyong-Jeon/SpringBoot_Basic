@@ -2,12 +2,14 @@ package com.example.springboot_basic.api;
 
 import com.example.springboot_basic.dto.comment.ChildCommentForm;
 import com.example.springboot_basic.dto.comment.CommentForm;
+import com.example.springboot_basic.dto.comment.DeleteCommentForm;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.service.CommentService;
 import com.example.springboot_basic.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +37,13 @@ public class CommentApiController {
     @PatchMapping("/comments")
     public ResponseEntity<ResponseData<?>> updateComment(@Valid @RequestBody CommentForm commentForm) {
         ResponseData<String> responseData = commentService.updateComment(commentForm);
+        return responseUtil.createResponseEntity(responseData, new HttpHeaders());
+    }
+
+    // 댓글 및 대댓글 삭제
+    @DeleteMapping("/comments")
+    public ResponseEntity<ResponseData<?>> deleteComment(@Valid @RequestBody DeleteCommentForm deleteCommentForm) {
+        ResponseData<String> responseData = commentService.deleteComment(deleteCommentForm);
         return responseUtil.createResponseEntity(responseData, new HttpHeaders());
     }
 
