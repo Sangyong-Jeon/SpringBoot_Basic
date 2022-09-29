@@ -24,7 +24,8 @@ public class PrincipalDetailsService implements UserDetailsService {
     // loadUserByUsername()이 종료되면 @AuthenticationPrincipal 어노테이션 만들어짐
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> findMember = memberRepository.findByLoginId(username);
-        return findMember.map(PrincipalDetails::new).orElse(null);
+        return memberRepository.findByLoginId(username)
+                .map(PrincipalDetails::new)
+                .orElse(null);
     }
 }
