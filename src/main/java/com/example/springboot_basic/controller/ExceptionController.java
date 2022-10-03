@@ -4,15 +4,20 @@ import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.exception.CommentNotExistException;
 import com.example.springboot_basic.exception.PostNotExistException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @ControllerAdvice
 public class ExceptionController {
 
@@ -39,5 +44,14 @@ public class ExceptionController {
         Header header = Header.notFound(e.getMessage());
         ResponseData<String> responseData = new ResponseData<>(header, "");
         return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseData<String>> controllerValidException(MethodArgumentNotValidException e) {
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        log.warn("MethodArgumentNotValidException 발생 : [{}] {} : 입력된 값 [{}]", fieldError.getField(), fieldError.getDefaultMessage(), fieldError.getRejectedValue());
+        Header header = Header.badRequest(e.getBindingResult().getFieldError().getDefaultMessage());
+        ResponseData<String> responseData = new ResponseData<>(header, "");
+        return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
     }
 }
