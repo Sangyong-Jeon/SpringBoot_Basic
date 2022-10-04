@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("message", "데이터 자바스크립트에 넣어짐");
+    public String home() {
         return "home"; // resources:templates/home.html 반환
     }
 }

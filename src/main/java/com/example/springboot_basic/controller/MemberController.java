@@ -25,13 +25,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // 회원가입
+    // 회원가입 페이지
     @GetMapping("/members/new")
     public String createForm(Model model) {
         model.addAttribute("memberForm", new MemberForm());
         return "member/member-form";
     }
 
+    // 회원 가입
     @PostMapping("/members/new")
     public String create(@Valid MemberForm form, BindingResult result) {
         if (result.hasErrors()) {
@@ -41,7 +42,7 @@ public class MemberController {
         return "redirect:/";
     }
 
-    // 회원 상세조회
+    // 회원 상세조회 페이지
     @GetMapping("/members")
     public String info(@AuthenticationPrincipal PrincipalDetails principalDetails,
                        Model model) {
