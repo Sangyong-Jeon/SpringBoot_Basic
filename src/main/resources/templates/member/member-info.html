@@ -6,30 +6,87 @@
 <div class="container">
     <div th:replace="fragments/body-header :: bodyHeader"/>
     <div>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>번호</th>
-                <th>아이디</th>
-                <th>이름</th>
-                <th>권한</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td th:text="${member.id}"></td>
-                <td th:text="${member.loginId}"></td>
-                <td th:text="${member.name}"></td>
-                <td th:text="${member.role}"></td>
-            </tr>
-            </tbody>
-        </table>
-        <button type="button" class="btn btn-secondary" onclick="backPage()">돌아가기</button>
+        <h3>프로필 정보</h3>
+        <div th:text="|아이디 : ${member.loginId}|">아이디</div>
+        <span th:text="|이름 : ${member.name}|">이름</span>
+        <span th:if="${member.role.equals('ROLE_USER')}">(일반회원)</span>
+        <span th:unless="${member.role.equals('ROLE_USER')}">(관리자)</span>
     </div>
+    <hr>
+    <div>
+        <h3>게시글</h3>
+        <div class="pb-2">등록한 게시글 수 : 2개</div>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <tbody>
+                <tr>
+                    <td>
+                        <figure>
+                            <blockquote class="blockquote mb-n3">
+                                <p>게시글 제목</p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer mb-n3">
+                                게시글 생성일시
+                            </figcaption>
+                        </figure>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <figure>
+                            <blockquote class="blockquote mb-n3">
+                                <p>게시글 제목</p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer mb-n3">
+                                게시글 생성일시
+                            </figcaption>
+                        </figure>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <div>
+        <h3>댓글</h3>
+        <div class="pb-2">등록한 댓글수 : 2개</div>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <tbody>
+                <tr>
+                    <td>
+                        <figure>
+                            <blockquote class="blockquote mb-n2">
+                                <h5>댓글 내용</h5>
+                            </blockquote>
+                            <figcaption class="blockquote-footer mb-n3">
+                                댓글 생성일시 | <cite title="게시글 제목">게시글 제목</cite>
+                            </figcaption>
+                        </figure>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <figure>
+                            <blockquote class="blockquote mb-n2">
+                                <h5>댓글 내용</h5>
+                            </blockquote>
+                            <figcaption class="blockquote-footer mb-n3">
+                                댓글 생성일시 | <cite title="게시글 제목">게시글 제목</cite>
+                            </figcaption>
+                        </figure>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <button type="button" class="btn btn-secondary mb-3" onclick="backPage()">돌아가기</button>
     <div th:replace="fragments/footer :: footer"/>
 </div>
-
-
 </body>
 
 <script th:inline="javascript">
