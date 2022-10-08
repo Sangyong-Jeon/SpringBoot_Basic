@@ -48,7 +48,7 @@
     <div class="py-2 border-bottom">댓글</div>
     <!-- 댓글 등록 입력칸 -->
     <div class="py-3">
-        <textarea id="comment" placeholder="댓글을 입력하세요" style="width:100%" rows="3"></textarea>
+        <textarea id="comment" class="autosize" placeholder="댓글을 입력하세요" style="width:100%" rows="3"></textarea>
         <div class="py-2" sec:authorize="isAnonymous()">
             <label for="parent_password">비밀번호</label>
             <input type="password" id="parent_password">
@@ -182,7 +182,7 @@
                     </div>
                     <!-- 대댓글 등록 입력칸 -->
                     <div class="py-2">
-                        <textarea th:id="|child_comment${comment.id}|" placeholder="댓글을 입력하세요" style="width: 100%"
+                        <textarea th:id="|child_comment${comment.id}|" class="autosize" placeholder="댓글을 입력하세요" style="width: 100%"
                                   rows="3"></textarea>
                         <div class="py-2" sec:authorize="isAnonymous()">
                             <label th:for="|child_password${comment.id}|">비밀번호</label>
