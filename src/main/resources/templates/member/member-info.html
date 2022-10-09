@@ -9,8 +9,8 @@
         <h3>프로필 정보</h3>
         <div th:text="|아이디 : ${member.loginId}|"></div>
         <span th:text="|이름 : ${member.name}|"></span>
-        <span th:if="${member.role.equals('ROLE_USER')}"></span>
-        <span th:unless="${member.role.equals('ROLE_USER')}"></span>
+        <span th:if="${member.role.equals('ROLE_USER')}">(일반회원)</span>
+        <span th:unless="${member.role.equals('ROLE_USER')}">(관리자)</span>
     </div>
     <hr>
     <div>
