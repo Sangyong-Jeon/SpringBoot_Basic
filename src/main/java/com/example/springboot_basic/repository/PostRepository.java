@@ -1,5 +1,6 @@
 package com.example.springboot_basic.repository;
 
+import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.domain.post.Post;
 import com.example.springboot_basic.dto.post.PostSearch;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 게시글 전체 조회 - 제목과 카테고리로 검색
     @Query("select p from Post p where p.title Like %:#{#search.getPostTitle()}% and p.category =:#{#search.getPostCategory()}")
     List<Post> findPosts(@Param("search") PostSearch postSearch);
+
+    List<Post> findByMember(Member member);
 }

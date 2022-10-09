@@ -46,8 +46,7 @@ public class MemberController {
     @GetMapping("/members")
     public String info(@AuthenticationPrincipal PrincipalDetails principalDetails,
                        Model model) {
-        Member member = principalDetails.getMember();
-        MemberInfoResponse memberInfoResponse = new MemberInfoResponse(member);
+        MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(principalDetails.getMember());
         model.addAttribute("member", memberInfoResponse);
         return "member/member-info";
     }
