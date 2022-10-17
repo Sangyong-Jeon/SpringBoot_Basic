@@ -55,12 +55,14 @@ public class MemberInfoResponse {
         private Long id;
         private String content;
         private LocalDateTime createdDate;
+        private Long postId;
         private String postTitle;
 
         public CommentDto(Comment comment) {
             this.id = comment.getId();
             this.content = comment.getContent();
             this.createdDate = comment.getCreatedDate();
+            this.postId = comment.getPost().getId();
             this.postTitle = comment.getPost().getTitle();
         }
     }

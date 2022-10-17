@@ -20,7 +20,7 @@
             <table class="table table-hover table-bordered">
                 <tbody>
                 <tr th:each="post : ${member.postDtos}">
-                    <td>
+                    <td th:id="${post.id}" onclick="movePostInfo(this.id)">
                         <figure>
                             <blockquote class="blockquote mb-n3">
                                 <p th:text="${post.title}"></p>
@@ -41,13 +41,14 @@
             <table class="table table-hover table-bordered">
                 <tbody>
                 <tr th:each="comment : ${member.commentDtos}">
-                    <td>
+                    <td th:id="${comment.postId}" onclick="movePostInfo(this.id)">
                         <figure>
                             <blockquote class="blockquote mb-n2">
                                 <h5 th:text="${comment.content}">댓글 내용</h5>
                             </blockquote>
                             <figcaption class="blockquote-footer mb-n3">
-                                <span th:text="|${comment.createdDate} / |"></span><cite th:text="${comment.postTitle}"></cite>
+                                <span th:text="|${comment.createdDate} / |"></span><cite
+                                    th:text="${comment.postTitle}"></cite>
                             </figcaption>
                         </figure>
                     </td>
@@ -65,6 +66,10 @@
 <script th:inline="javascript">
     const backPage = () => {
         location.href = "http://localhost:8081/"
+    }
+
+    const movePostInfo = (id) => {
+        location.href = "http://localhost:8081/posts/" + id;
     }
 </script>
 
