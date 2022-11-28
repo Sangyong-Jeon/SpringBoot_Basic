@@ -7,18 +7,17 @@ import com.example.springboot_basic.security.PrincipalDetails;
 import com.example.springboot_basic.service.PostService;
 import com.example.springboot_basic.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,10 +47,11 @@ public class PostController {
 
     // 게시글 리스트 페이지
     @GetMapping("/posts")
-    public String listPost(@ModelAttribute("postSearch") PostSearch postSearch, Model model) {
-        // 화면을 조회하기 위한 기능이고, 코드가 적다면 repository를 여기서 호출해도 괜찮으나 지금은 Service에 위임함.
-        List<PostsResponse> posts = postService.findPosts(postSearch);
-        model.addAttribute("posts", posts);
+    public String listPost(@PageableDefault(size = 5) Pageable pageable,
+                           @ModelAttribute("postSearch") PostSearch postSearch,
+                           Model model) {
+        PostsPageResponse postPages = postService.findPostsPaging(postSearch, pageable);
+        model.addAttribute("postPages", postPages);
         return "post/post-list";
     }
 

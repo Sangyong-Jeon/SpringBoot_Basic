@@ -2,10 +2,13 @@ package com.example.springboot_basic.api;
 
 import com.example.springboot_basic.dto.post.PostForm;
 import com.example.springboot_basic.dto.post.PostInfoResponse;
+import com.example.springboot_basic.dto.post.PostSearch;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.service.PostService;
 import com.example.springboot_basic.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

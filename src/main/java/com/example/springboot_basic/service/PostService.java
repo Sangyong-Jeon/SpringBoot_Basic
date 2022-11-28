@@ -4,6 +4,7 @@ import com.example.springboot_basic.domain.comment.Comment;
 import com.example.springboot_basic.domain.member.Member;
 import com.example.springboot_basic.domain.post.File;
 import com.example.springboot_basic.domain.post.Post;
+import com.example.springboot_basic.domain.post.PostCategory;
 import com.example.springboot_basic.dto.UploadFile;
 import com.example.springboot_basic.dto.comment.CommentResponse;
 import com.example.springboot_basic.dto.member.MemberInfoResponse;
@@ -12,7 +13,7 @@ import com.example.springboot_basic.dto.post.PostEditResponse;
 import com.example.springboot_basic.dto.post.PostForm;
 import com.example.springboot_basic.dto.post.PostInfoResponse;
 import com.example.springboot_basic.dto.post.PostSearch;
-import com.example.springboot_basic.dto.post.PostsResponse;
+import com.example.springboot_basic.dto.post.PostsPageResponse;
 import com.example.springboot_basic.dto.response.Header;
 import com.example.springboot_basic.dto.response.ResponseData;
 import com.example.springboot_basic.exception.PostNotExistException;
@@ -23,10 +24,11 @@ import com.example.springboot_basic.repository.FileRepository;
 import com.example.springboot_basic.repository.MemberRepository;
 import com.example.springboot_basic.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +40,6 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,16 +70,24 @@ public class PostService {
         return savePost.getId();
     }
 
-    public List<PostsResponse> findPosts(PostSearch postSearch) {
-        // 동적으로 쿼리를 넣을수 없어서 if문과 repository 함수를 전부 만들어서 실행해야함!!!
-        List<Post> posts;
-        if (postSearch.isEmpty()) posts = postRepository.findAll();
-        else if (postSearch.getPostTitle() == null || postSearch.getPostTitle().equals(""))
-            posts = postRepository.findPostsByCategory(postSearch);
-        else if (postSearch.getPostCategory() == null) posts = postRepository.findPostsByTitle(postSearch);
-        else posts = postRepository.findPosts(postSearch);
-        List<PostsResponse> postsDto = posts.stream().map(PostsResponse::new).collect(Collectors.toList());
-        return postsDto;
+    public PostsPageResponse findPostsPaging(PostSearch postSearch, Pageable pageable) {
+        return new PostsPageResponse(getPostsPage(postSearch, pageable));
+    }
+    
+    public Page<Post> getPostsPage(PostSearch postSearch, Pageable pageable) {
+        if (postSearch.isEmpty()) {
+            return postRepository.findAllPaging(pageable);
+        }
+
+        if (postSearch.getPostTitle() == null || postSearch.getPostTitle().equals("")) {
+            return postRepository.findPostsByCategory(postSearch, pageable);
+        }
+
+        if (postSearch.getPostCategory() == null) {
+            return postRepository.findPostsByTitle(postSearch, pageable);
+        }
+
+        return postRepository.findPosts(postSearch, pageable);
     }
 
     public PostInfoResponse findPost(Long postId, HttpServletRequest request, HttpServletResponse response) {
