@@ -50,8 +50,10 @@
         <ul class="pagination justify-content-center"
             th:with="start = ${postPages.getStartPage()}, end = ${postPages.getEndPage()}">
             <li class="page-item">
-                <a th:if="${postPages.getPage() >= 10}" th:href="@{/posts(page=${postPages.getStartPage() - 2})}"
-                   class="page-link" aria-label="Previous">
+                <a th:if="${postPages.getPage() >= 10}"
+                   th:onclick="|javascript:findPostPages('${postPages.getStartPage() - 2}')|"
+                   class="page-link"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
                 </a>
