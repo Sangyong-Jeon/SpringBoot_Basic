@@ -35,7 +35,7 @@
             </thead>
             <tbody>
             <tr th:each="post,index : ${postPages.getPosts()}" onclick="movePostInfoPage(this)">
-                <td th:id="${post.id}" th:text="${index.count}"></td>
+                <td th:id="${post.id}" th:text="${index.count + postPages.getPage() * 5}"></td>
                 <td th:text="${post.title}"></td>
                 <td th:text="${post.viewCount}"></td>
                 <td th:text="${post.createdName}"></td>

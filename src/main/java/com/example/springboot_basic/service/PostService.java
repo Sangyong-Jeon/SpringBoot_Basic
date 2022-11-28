@@ -73,7 +73,7 @@ public class PostService {
     public PostsPageResponse findPostsPaging(PostSearch postSearch, Pageable pageable) {
         return new PostsPageResponse(getPostsPage(postSearch, pageable));
     }
-    
+
     public Page<Post> getPostsPage(PostSearch postSearch, Pageable pageable) {
         if (postSearch.isEmpty()) {
             return postRepository.findAllPaging(pageable);
