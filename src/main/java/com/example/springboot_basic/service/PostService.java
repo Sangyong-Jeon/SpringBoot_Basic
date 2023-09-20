@@ -40,6 +40,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -115,24 +116,20 @@ public class PostService {
     }
 
     private void viewCountValidation(Post post, HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        Cookie cookie = null;
-        boolean isCookie = false;
-        for (int i = 0; cookies != null && i < cookies.length; i++) { // request에 쿠키들이 있을 때
-            if (cookies[i].getName().equals("postView")) { // postView 쿠키가 있을 때
-                cookie = cookies[i];
-                if (!cookie.getValue().contains("[" + post.getId() + "]")) {
+        Cookie[] cookies = Optional.ofNullable(request.getCookies()).orElseGet(() -> new Cookie[0]);
+        Cookie cookie = Arrays.stream(cookies)
+                .filter(c -> c.getName().equals("postView"))
+                .findFirst()
+                .orElseGet(() -> {
                     post.addViewCount();
-                    cookie.setValue(cookie.getValue() + "[" + post.getId() + "]");
-                }
-                isCookie = true;
-                break;
-            }
-        }
-        if (!isCookie) { // postView 쿠키가 없을 때
+                    return new Cookie("postView", "[" + post.getId() + "]");
+                });
+
+        if (!cookie.getValue().contains("[" + post.getId() + "]")) {
             post.addViewCount();
-            cookie = new Cookie("postView", "[" + post.getId() + "]"); // oldCookie에 새 쿠키 생성
+            cookie.setValue(cookie.getValue() + "[" + post.getId() + "]");
         }
+
         long todayEndSecond = LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
         long currentSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         cookie.setPath("/"); // 모든 경로에서 접근 가능
