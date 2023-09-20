@@ -75,6 +75,7 @@ public class PostService {
     }
 
     public Page<Post> getPostsPage(PostSearch postSearch, Pageable pageable) {
+
         if (postSearch.isEmpty()) {
             return postRepository.findAllPaging(pageable);
         }
@@ -175,10 +176,11 @@ public class PostService {
         });
         // 댓글 삭제
         List<Comment> comments = commentRepository.findCommentsForPost(post);
-        List<Comment> childs = new ArrayList<>();
-        comments.forEach(c -> {
-            if (c.getChild().size() > 0) childs.addAll(c.getChild());
-        });
+        List<Comment> childs = comments.stream()
+                .filter(c -> !c.getChild().isEmpty())
+                .flatMap(c -> c.getChild().stream())
+                .collect(Collectors.toList());
+
         commentRepository.deleteAllInBatch(childs);
         commentRepository.deleteAllInBatch(comments);
         postRepository.delete(post);
