@@ -25,7 +25,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 게시글 전체 조회 - 카테고리로 검색
     @Query(value = "select p from Post p where p.category =:#{#search.getPostCategory()}",
-            countQuery = "select count(p) from Post p where p.title Like %:#{#search.getPostTitle()}%")
+            countQuery = "select count(p) from Post p where p.category =:#{#search.getPostCategory()}")
     Page<Post> findPostsByCategory(@Param("search") PostSearch postSearch, Pageable pageable);
 
     // 게시글 전체 조회 - 제목과 카테고리로 검색
